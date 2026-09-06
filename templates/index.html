@@ -3,18 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" type="image/png" href="/static/img/favicon.png">
     <title>Clay - Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alata&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <header class="site-header">
         <div class="container">
-            <a href="#profile" class="brand">Clay</a>
+            <a href="#profile">
+                <img src="/static/img/Claylogo.png" alt="Clay Logo" class="brand-logo">
+            </a>
             <nav>
                 <a href="#profile">Profile</a>
+                <a href="#education">Education</a>
             </nav>
         </div>
     </header>
@@ -23,15 +28,20 @@
         <section class="hero" id="profile">
             <div class="container hero-grid">
                 <div class="hero-identity">
-                    <p class="hero-kicker">Computer Science &middot; Universitas Indonesia</p>
-                    <h1>Marclay Ardell</h1>
+                    <p class="hero-kicker">
+                        <span class="kicker-comp">Computer</span>
+                        <span class="kicker-science">Science</span>
+                        <span class="kicker-dot">&middot;</span>
+                        <span class="kicker-ui">Universitas Indonesia</span>
+                    </p>
+                    <h1>Marclay<br>Ardell</h1>
                 </div>
                 <div class="hero-photo">
                     <div class="photo-block"></div>
-                    <img class="avatar" src="/static/img/clay.JPEG" alt="Photo of Clay">
+                    <img class="avatar" src="/static/img/clay.png" alt="Photo of Clay">
                 </div>
                 <div class="hero-details">
-                    <p class="bio">CS student at Universitas Indonesia for longer than planned, now a familiar (and slightly dreaded) face among Fasilkom students as a teaching assistant across several courses.</p>
+                    <p class="bio">Passionate computer science student at Universitas Indonesia, with a keen interest in software development and problem-solving. Constantly learning new things and developing my skills.</p>
                     <dl class="meta-list">
                         <div class="meta-row">
                             <dt>NPM</dt>
@@ -50,8 +60,71 @@
                 </div>
             </div>
         </section>
+<div class="divider"></div>
+        <section class="hero" id="education">
+    <div class="container">
+        <div class="hero-identity">
+            <h2 class="brand">Education <br>
+                 
+            </h2>
+            </div>
+        <div class="education-list">
+            <!-- Entry 1 -->
+            <article class="education-card">
+                <div class="education-header">
+                    <img class="education-logo" src="/static/img/logoui.png" alt="Universitas Indonesia Logo">
+                    <div class="education-title">
+                        <h3 class="subheading">Universitas Indonesia</h3>
+                        <dl class="meta-list">
+                            <div class="meta-row">
+                                <dt>Period</dt>
+                                <dd>2025 &mdash; Present</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+                <p class="bio">Pursuing a Bachelor's degree in information systems, learning and developing skills everyday.</p>
+            </article>
+
+            <!-- Entry 2 -->
+            <article class="education-card">
+                <div class="education-header">
+                    <img class="education-logo" src="/static/img/alazhar.jpg" alt="SMA Logo">
+                    <div class="education-title">
+                        <h3 class="subheading">SMA Islam Al Azhar 2</h3>
+                        <dl class="meta-list">
+                            <div class="meta-row">
+                                <dt>Period</dt>
+                                <dd>2022 &mdash; 2025</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+                <p class="bio">Completed high school education, building a strong foundation in logic, mathematics, and science.</p>
+            </article>
+
+            <!-- Entry 3 -->
+            <article class="education-card">
+                <div class="education-header">
+                    <img class="education-logo" src="/static/img/alazhar.jpg" alt="SMP Islam Al Azhar 2 Logo">
+                    <div class="education-title">
+                        <h3 class="subheading">SMP Islam Al Azhar 2</h3>
+                        <dl class="meta-list">
+                            <div class="meta-row">
+                                <dt>Period</dt>
+                                <dd>2019 &mdash; 2022</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+                <p class="bio">Completed my junior high school education at SMP Islam Al Azhar 2, where I developed a strong foundation in academics and extracurricular activities.</p>
+            </article>
+        </div>
+    </div>
+</section>
     </main>
 
+    <div class="divider"></div>
     <footer class="site-footer">
         <div class="container">
             <p>&copy; 2026 Marclay Ardell. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
