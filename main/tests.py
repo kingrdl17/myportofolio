@@ -46,7 +46,7 @@ class MainTest(TestCase):
         Experience.objects.all().delete()
         response = self.client.get(reverse("main:show_experience"))
 
-        self.assertContains(response, "Belum ada pengalaman yang ditambahkan.")
+        self.assertContains(response, "Nothing here for now.")
 
     def test_completed_experience(self):
         self.experience.ended_at = timezone.now()
@@ -56,3 +56,31 @@ class MainTest(TestCase):
         self.assertFalse(self.experience.is_ongoing)
         self.assertContains(response, "Selesai")
         self.assertNotContains(response, "Sedang berlangsung")
+
+    def test_education_accessibility(self):
+        response = self.client.get(reverse("main:show_education"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "education.html")
+        self.assertContains(response, f'href="{reverse("main:show_main")}"')
+
+    def test_education_model(self):
+        from main.models import Education
+
+        education = Education.objects.create(
+            institution="Universitas Indonesia",
+            degree="S1",
+            field_of_study="Sistem Informasi",
+            started_at=timezone.now().date(),
+        )
+
+        self.assertEqual(str(education), "S1 at Universitas Indonesia")
+        self.assertTrue(education.is_ongoing)
+
+    def test_education_empty(self):
+        from main.models import Education
+
+        Education.objects.all().delete()
+        response = self.client.get(reverse("main:show_education"))
+
+        self.assertContains(response, "Nothing here for now.")
