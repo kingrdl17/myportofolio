@@ -1,60 +1,69 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block meta %}
+    <title>Education - {{ name }}</title>
+{% endblock meta %}
 {% block content %}
     <main>
         <section class="experience-section" id="education">
             <div class="container">
                 <p class="section-kicker">Latar belakang pendidikan</p>
-                <h1>Education</h1>
-
-                <div class="education-list">
+                <div class="education-header">
+                    <h1>Education</h1>
+                    <a href="{% url 'main:create_education' %}"
+                       class="button project-add-button">
+                        <span aria-hidden="true">+</span>
+                        Tambah Pendidikan
+                    </a>
+                </div>
+                <form method="get"
+                      action="{% url 'main:show_education' %}"
+                      class="education-search">
+                    <input type="search"
+                           name="title"
+                           value="{{ title_query }}"
+                           placeholder="Cari berdasarkan nama institusi"
+                           class="education-search__input"
+                           aria-label="Cari berdasarkan nama institusi">
+                    <button type="submit" class="button">Cari</button>
+                </form>
+                <div class="experience-grid education-grid">
                     {% for education in education_list %}
-                        <article class="education-card">
-                            <div class="education-header">
-                                {% if education.thumbnail %}
-                                    <img class="education-logo" src="{{ education.thumbnail }}" alt="{{ education.institution }} Logo">
+                        <article class="experience-card">
+                            {% if education.thumbnail %}
+                                <img src="{{ education.thumbnail }}"
+                                     alt="Gambar {{ education.institution }}"
+                                     class="education-image">
+                            {% endif %}
+                            <h2>{{ education.institution }}</h2>
+                            <span class="experience-category">
+                                {{ education.degree }}{% if education.degree and education.field_of_study %} &bull; {% endif %}{{ education.field_of_study }}
+                            </span>
+                            {% if education.description %}
+                                <p class="experience-description">{{ education.description }}</p>
+                            {% endif %}
+                            <p class="experience-description">
+                                {{ education.started_at|date:"Y" }} &mdash; 
+                                {% if education.is_ongoing %}
+                                    Present
+                                {% else %}
+                                    {{ education.ended_at|date:"Y" }}
                                 {% endif %}
-                                <div class="education-title">
-                                    <h3 class="subheading">{{ education.institution }}</h3>
-                                    {% if education.degree or education.field_of_study %}
-                                        <p class="experience-category">
-                                            {{ education.degree }}{% if education.degree and education.field_of_study %} &bull; {% endif %}{{ education.field_of_study }}
-                                        </p>
-                                    {% endif %}
-                                    <dl class="meta-list">
-                                        <div class="meta-row">
-                                            <dt>Period</dt>
-                                            <dd>
-                                                {{ education.started_at|date:"Y" }} &mdash; 
-                                                {% if education.is_ongoing %}
-                                                    Present
-                                                {% else %}
-                                                    {{ education.ended_at|date:"Y" }}
-                                                {% endif %}
-                                            </dd>
-                                        </div>
-                                    </dl>
+                            </p>
+                            <div class="education-card-actions">
+                                <div class="education-actions">
+                                    {% include "components/education_delete_modal.html" with education=education %}
                                 </div>
                             </div>
-                            
-                            {% if education.description %}
-                                <p class="bio">{{ education.description }}</p>
-                            {% endif %}
-
-                            {% if education.is_ongoing %}
-                                <p class="experience-status">Sedang berlangsung</p>
-                            {% else %}
-                                <p class="experience-status">Selesai</p>
-                            {% endif %}
                         </article>
                     {% empty %}
-                        <p class="empty-state">
-                            Nothing here for now.
-                        </p>
+                        {% if title_query %}
+                            <p class="empty-state">Tidak ada pendidikan dengan nama tersebut.</p>
+                        {% else %}
+                            <p class="empty-state">Nothing here for now.</p>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
         </section>
     </main>
-    {% endblock content %}
-</body>
-
+{% endblock content %}
