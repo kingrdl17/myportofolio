@@ -10,7 +10,7 @@
                 <div class="education-header">
                     <h1>Education</h1>
                     <a href="{% url 'main:create_education' %}"
-                       class="button project-add-button">
+                       class="button-action">
                         <span aria-hidden="true">+</span>
                         Tambah Pendidikan
                     </a>
@@ -24,7 +24,7 @@
                            placeholder="Cari berdasarkan nama institusi"
                            class="education-search__input"
                            aria-label="Cari berdasarkan nama institusi">
-                    <button type="submit" class="button">Cari</button>
+                    <button type="submit" class="button-action">Cari</button>
                 </form>
                 <div class="experience-grid education-grid">
                     {% for education in education_list %}

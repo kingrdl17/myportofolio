@@ -1,40 +1,40 @@
-<p class="experience-status">
+<p class="education-status">
     <button type="button"
             class="button button-danger"
-            popovertarget="delete-edu-{{ education.id }}"
-            aria-label="Hapus {{ education.institution }}"
-            title="Hapus pendidikan">
-        Hapus Pendidikan
+            popovertarget="delete-exp-{{ experience.id }}"
+            aria-label="Hapus {{ experience.company }}"
+            title="Hapus pengalaman">
+        Hapus Pengalaman
     </button>
 </p>
-<div id="delete-edu-{{ education.id }}"
+<div id="delete-exp-{{ experience.id }}"
      class="education-delete-modal"
      popover="auto"
      role="dialog"
      aria-modal="true"
-     aria-labelledby="delete-edu-title-{{ education.id }}">
+     aria-labelledby="delete-exp-title-{{ experience.id }}">
     <button type="button"
             class="education-delete-modal__backdrop"
-            popovertarget="delete-edu-{{ education.id }}"
+            popovertarget="delete-exp-{{ experience.id }}"
             popovertargetaction="hide"
             aria-label="Tutup konfirmasi hapus"></button>
     <div class="education-delete-modal__content">
         <button type="button"
-                class="education-delete-modal__close"
-                popovertarget="delete-edu-{{ education.id }}"
+                class="button education-delete-modal__close"
+                popovertarget="delete-exp-{{ experience.id }}"
                 popovertargetaction="hide"
                 aria-label="Tutup konfirmasi hapus">×</button>
-        <h2 id="delete-edu-title-{{ education.id }}">Hapus Pendidikan?</h2>
+        <h2 id="delete-exp-title-{{ experience.id }}">Hapus Pengalaman?</h2>
         <p>
             Apakah Anda yakin ingin menghapus
-            <strong>{{ education.institution }}</strong>?
+            <strong>{{ experience.company }}</strong>?
         </p>
         <div class="education-delete-modal__actions">
             <button type="button"
                     class="button-neutral"
-                    popovertarget="delete-edu-{{ education.id }}"
+                    popovertarget="delete-exp-{{ experience.id }}"
                     popovertargetaction="hide">Batal</button>
-            <form method="post" action="{% url 'main:delete_education' education.id %}">
+            <form method="post" action="{% url 'main:delete_experience' experience.id %}">
                 {% csrf_token %}
                 <button type="submit" class="button-danger">Ya, Hapus</button>
             </form>

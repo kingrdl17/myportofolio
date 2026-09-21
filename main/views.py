@@ -75,6 +75,8 @@ def create_experience(request):
     }
     return render(request, "experience_form.html", context)
 
+
+
 # ====================================================================================================== DELETE =====================================================
 
 def delete_education(request, education_id):
@@ -86,6 +88,16 @@ def delete_education(request, education_id):
         return redirect("main:show_education")
 
     return redirect("main:show_education")
+
+def delete_experience(request, experience_id):
+    experience = get_object_or_404(Experience, pk=experience_id)
+
+    if request.method == "POST":
+        experience.delete()
+        messages.success(request, "Pengalaman berhasil dihapus!")
+        return redirect("main:show_experience")
+
+    return redirect("main:show_experience")
 
 # ====================================================================================================== GET JSON =====================================================
 
@@ -99,3 +111,12 @@ def get_education_json(request):
     educations_json = serializers.serialize("json", educations)
     return HttpResponse(educations_json, content_type="application/json")
 
+def get_experience_json(request):
+    title_query = request.GET.get("title", "").strip()
+    experience = Experience.object.all()
+
+    if title_query:
+        experience = experience.filter(title__icontains=title_query)
+
+    experience_json = serializers.serialize("json", experience)
+    return HttpResponse(experience_json, content_type="application/json")
