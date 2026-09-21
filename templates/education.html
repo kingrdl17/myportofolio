@@ -6,7 +6,7 @@
     <main>
         <section class="experience-section" id="education">
             <div class="container">
-                <p class="section-kicker">Latar belakang pendidikan</p>
+                <p class="section-kicker">Academic background</p>
                 <div class="education-header">
                     <h1>Education</h1>
                     <a href="{% url 'main:create_education' %}"
@@ -51,9 +51,20 @@
                             </p>
                             <div class="education-card-actions">
                                 <div class="education-actions">
-                                    {% include "components/education_delete_modal.html" with education=education %}
+                                    <button type="button"
+                                            class="button button-danger"
+                                            popovertarget="delete-edu-{{ education.id }}"
+                                            title="Delete">
+                                        Delete
+                                    </button>
+                                    <a href="{% url 'main:edit_education' education.id %}"
+                                       class="button button-neutral"
+                                       title="Edit">
+                                        Edit
+                                    </a>
                                 </div>
                             </div>
+                            {% include "components/education_delete_modal.html" with education=education %}
                         </article>
                     {% empty %}
                         {% if title_query %}
