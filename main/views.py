@@ -52,7 +52,7 @@ def create_education(request):
 
     if request.method == "POST" and form.is_valid():
         form.save()
-        messages.success(request, "Pendidikan baru berhasil ditambahkan!")
+        messages.success(request, "Added Successfully!")
         return redirect("main:show_education")
 
     context = {
@@ -66,7 +66,7 @@ def create_experience(request):
 
     if request.method == "POST" and form.is_valid():
         form.save()
-        messages.success(request, "Pengalaman baru berhasil ditambahkan!")
+        messages.success(request, "Added Successfully!")
         return redirect("main:show_experience")
 
     context = {
@@ -84,7 +84,7 @@ def delete_education(request, education_id):
 
     if request.method == "POST":
         education.delete()
-        messages.success(request, "Pendidikan berhasil dihapus!")
+        messages.success(request, "Deleted")
         return redirect("main:show_education")
 
     return redirect("main:show_education")
@@ -94,7 +94,7 @@ def delete_experience(request, experience_id):
 
     if request.method == "POST":
         experience.delete()
-        messages.success(request, "Pengalaman berhasil dihapus!")
+        messages.success(request, "Deleted")
         return redirect("main:show_experience")
 
     return redirect("main:show_experience")

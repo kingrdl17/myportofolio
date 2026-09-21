@@ -12,7 +12,7 @@
                     <a href="{% url 'main:create_education' %}"
                        class="button-action">
                         <span aria-hidden="true">+</span>
-                        Tambah Pendidikan
+                        Add New
                     </a>
                 </div>
                 <form method="get"
@@ -24,7 +24,7 @@
                            placeholder="Cari berdasarkan nama institusi"
                            class="education-search__input"
                            aria-label="Cari berdasarkan nama institusi">
-                    <button type="submit" class="button-action">Cari</button>
+                    <button type="submit" class="button-action">Search</button>
                 </form>
                 <div class="experience-grid education-grid">
                     {% for education in education_list %}
@@ -57,7 +57,7 @@
                         </article>
                     {% empty %}
                         {% if title_query %}
-                            <p class="empty-state">Tidak ada pendidikan dengan nama tersebut.</p>
+                            <p class="empty-state">No education found</p>
                         {% else %}
                             <p class="empty-state">Nothing here for now.</p>
                         {% endif %}

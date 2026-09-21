@@ -4,7 +4,7 @@
             popovertarget="delete-exp-{{ experience.id }}"
             aria-label="Hapus {{ experience.company }}"
             title="Hapus pengalaman">
-        Hapus Pengalaman
+        Delete
     </button>
 </p>
 <div id="delete-exp-{{ experience.id }}"
@@ -24,19 +24,18 @@
                 popovertarget="delete-exp-{{ experience.id }}"
                 popovertargetaction="hide"
                 aria-label="Tutup konfirmasi hapus">×</button>
-        <h2 id="delete-exp-title-{{ experience.id }}">Hapus Pengalaman?</h2>
+        <h2 id="delete-exp-title-{{ experience.id }}">Delete experience?</h2>
         <p>
-            Apakah Anda yakin ingin menghapus
-            <strong>{{ experience.company }}</strong>?
+            Are you sure you want to permanently delete this?
         </p>
         <div class="education-delete-modal__actions">
             <button type="button"
                     class="button-neutral"
                     popovertarget="delete-exp-{{ experience.id }}"
-                    popovertargetaction="hide">Batal</button>
+                    popovertargetaction="hide">Cancel</button>
             <form method="post" action="{% url 'main:delete_experience' experience.id %}">
                 {% csrf_token %}
-                <button type="submit" class="button-danger">Ya, Hapus</button>
+                <button type="submit" class="button-danger">DELETE</button>
             </form>
         </div>
     </div>

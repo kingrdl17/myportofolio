@@ -53,7 +53,7 @@ class EducationForm(ModelForm):
             ),
             "thumbnail": URLInput(
                 attrs={
-                    "placeholder": "https://drive.google.com/thumbnail?id=...&sz=w1000",
+                    "placeholder": "URL Here",
                 }
             ),
             "started_at": DateInput(
