@@ -32,6 +32,10 @@ h1, .brand {
 
 }
 
+h1 {
+    font-weight: 300;
+}
+
 .container {
     max-width: 960px;
     margin: 0 auto;
@@ -97,7 +101,7 @@ nav a:hover {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    font-weight: 800;
+    font-weight: 300;
 }
 
 .brand-logo { /* logo image */
@@ -378,7 +382,7 @@ nav a:hover {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    font-weight: 800;
+    font-weight: 300;
 }
 
 .experience-grid {
