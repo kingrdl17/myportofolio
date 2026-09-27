@@ -1,10 +1,20 @@
 from django.urls import path
 
 from main.views import (
-    show_main, show_experience, show_education,
-    create_education, get_education_json, delete_education,
-    create_experience, delete_experience, get_experience_json,
-    edit_education, edit_experience
+    show_main, 
+    show_experience, 
+    show_education,
+    create_education, 
+    get_education_json, 
+    delete_education,
+    create_experience, 
+    delete_experience, 
+    get_experience_json,
+    edit_education, 
+    edit_experience,
+    register,
+    login_user,
+    logout_user
 )
 
 app_name = "main"
@@ -24,5 +34,8 @@ urlpatterns = [
 
     path("api/educations/", get_education_json, name="get_education_json"),
     path("api/experiences/", get_experience_json, name="get_experience_json"),
-    
+
+    path("register/", register, name="register"),
+    path("login/", login_user, name="login"),
+    path("logout/", logout_user, name="logout"),
 ]
