@@ -81,6 +81,7 @@ p, h2 {
     border-radius: 0;
     border: none;
     box-shadow: none;
+    gap: 2rem;
 }
 
 nav a {
@@ -92,7 +93,6 @@ nav a {
 
 nav a:hover {
     color: #ffffff;
-    font-weight: bold;
     text-shadow: 
         0 0 5px #ffffff,
         0 0 10px #ffffff,
@@ -117,12 +117,25 @@ nav a:hover {
 .site-header nav { /*navigation links */
     display: flex;
     gap: 2rem;
+    margin-left: auto;
+    align-items: center;
 }
 
 .site-header nav a {
     color: var(--ink-light);
     text-decoration: none;
     font-size: 0.95rem;
+}
+
+.header-auth {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.nav-user {
+    font-size: 0.9rem;
+    color: var(--text-muted);
 }
 
 .hero { /*section*/
