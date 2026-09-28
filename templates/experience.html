@@ -50,7 +50,7 @@
                             <p class="experience-status">Selesai</p>
                         {% endif %}
                         {% include "components/experience_star.html" with project=project %}
-                        {% if user.is_superuser %}
+                        {% if user.is_superuser or is_editor %}
                         <div class="experience-card-actions">
                             <div class="experience-actions">
                                     <button type="button"

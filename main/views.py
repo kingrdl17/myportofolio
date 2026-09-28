@@ -34,6 +34,7 @@ def show_experience(request):
     context = {
         "name": "Marclay Ardell",
         "experience_list": Experience.objects.all(),
+        "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
     return render(request, "experience.html", context)
 
@@ -63,6 +64,7 @@ def show_education(request):
         "name": "Marclay Ardell",
         "education_list": educations,
         "title_query": title_query,
+        "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
     return render(request, "education.html", context)
 
@@ -106,7 +108,7 @@ def create_experience(request):
 
 @login_required(login_url="/login/")
 def edit_education(request, education_id):
-    if not request.user.is_superuser:
+    if not request.user.is_superuser and not request.user.groups.filter(name="Editor"):
         raise PermissionDenied
 
     education = get_object_or_404(Education, pk=education_id)
@@ -126,8 +128,8 @@ def edit_education(request, education_id):
 
 @login_required(login_url="/login/")
 def edit_experience(request, experience_id):
-    if not request.user.is_superuser:
-        raise PermissionDenied
+    if not request.user.is_superuser and not request.user.groups.filter(name="Editor"):
+            raise PermissionDenied
 
     experience = get_object_or_404(Experience, pk=experience_id)
     form = ExperienceForm(request.POST or None, instance=experience)
@@ -188,12 +190,12 @@ def get_education_json(request):
 
 def get_experience_json(request):
     title_query = request.GET.get("title", "").strip()
-    experience = Experience.object.all()
+    experience = Experience.objects.all()
 
     if title_query:
-        experience = experience.filter(title__icontains=title_query)
+        experience = Experience.filter(title__icontains=title_query)
 
-    experience_json = serializers.serialize("json", experience)
+    experience_json = serializers.serialize("json", experience, use_natural_foreign_keys=True)
     return HttpResponse(experience_json, content_type="application/json")
 
 # ====================================================================================================== AUTH =====================================================

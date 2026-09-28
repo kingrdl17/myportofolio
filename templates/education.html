@@ -51,7 +51,7 @@
                                     {{ education.ended_at|date:"Y" }}
                                 {% endif %}
                             </p>
-                            {% if user.is_superuser %}
+                            {% if user.is_superuser or is_editor %}
                             <div class="education-card-actions">
                                 <div class="education-actions">
                                     <button type="button"
