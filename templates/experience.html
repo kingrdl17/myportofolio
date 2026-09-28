@@ -7,11 +7,13 @@
 
             <div class="education-header">
             <h1>Experience</h1>
+            {% if user.is_superuser %}
             <a href="{% url 'main:create_experience' %}"
                 class="button-action">
                 <span aria-hidden="true">+</span>
                 Add New
             </a>
+            {% endif %}
             </div>
 
             <form method="get"
@@ -47,6 +49,8 @@
                         {% else %}
                             <p class="experience-status">Selesai</p>
                         {% endif %}
+                        {% include "components/experience_star.html" with project=project %}
+                        {% if user.is_superuser %}
                         <div class="experience-card-actions">
                             <div class="experience-actions">
                                     <button type="button"
@@ -62,6 +66,7 @@
                                     </a>
                                 </div>
                             {% include "components/experience_delete_modal.html" with experience=experience %}
+                        {% endif %} 
                     </article>
                 {% empty %}
                     <p class="empty-state">

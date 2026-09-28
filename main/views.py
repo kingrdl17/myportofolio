@@ -10,10 +10,15 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import redirect, render
+import datetime
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+
 
 # ====================================================================================================== SHOW =====================================================
 
 def show_main(request):
+    last_login = request.COOKIES.get('last_login', 'No login session found.')
     context = {
         "name": "Marclay Ardell",
         "npm": "2506621024",
@@ -21,6 +26,7 @@ def show_main(request):
         "bio": (
             "Passionate computer science student at Universitas Indonesia, with a keen interest in software development and problem-solving. Constantly learning new things and developing my skills."
         ),
+        "last_login": last_login,
     }
     return render(request, "index.html", context) 
 
@@ -30,6 +36,18 @@ def show_experience(request):
         "experience_list": Experience.objects.all(),
     }
     return render(request, "experience.html", context)
+
+@login_required(login_url="/login/")
+def toggle_star(request, experience_id):
+    experience = get_object_or_404(Experience, pk=experience_id)
+
+    if request.method == "POST":
+        if request.user in experience.starred_by.all():
+            experience.starred_by.remove(request.user)
+        else:
+            experience.starred_by.add(request.user)
+
+    return redirect("main:show_experience")
 
 def show_education(request):
     json_response = get_education_json(request)
@@ -50,7 +68,11 @@ def show_education(request):
 
 # ====================================================================================================== CREATE =====================================================
 
+@login_required(login_url="/login/")
 def create_education(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     form = EducationForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -61,10 +83,14 @@ def create_education(request):
     context = {
         "name": "Marclay Ardell",
         "form": form,
-    }
+    } 
     return render(request, "education_form.html", context)
 
+@login_required(login_url="/login/")
 def create_experience(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     form = ExperienceForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -78,7 +104,11 @@ def create_experience(request):
     }
     return render(request, "experience_form.html", context)
 
+@login_required(login_url="/login/")
 def edit_education(request, education_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     education = get_object_or_404(Education, pk=education_id)
     form = EducationForm(request.POST or None, instance=education)
 
@@ -94,7 +124,11 @@ def edit_education(request, education_id):
     }
     return render(request, "education_form.html", context)
 
+@login_required(login_url="/login/")
 def edit_experience(request, experience_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     experience = get_object_or_404(Experience, pk=experience_id)
     form = ExperienceForm(request.POST or None, instance=experience)
 
@@ -112,7 +146,11 @@ def edit_experience(request, experience_id):
 
 # ====================================================================================================== DELETE =====================================================
 
+@login_required(login_url="/login/")
 def delete_education(request, education_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     education = get_object_or_404(Education, pk=education_id)
 
     if request.method == "POST":
@@ -122,7 +160,11 @@ def delete_education(request, education_id):
 
     return redirect("main:show_education")
 
+@login_required(login_url="/login/")
 def delete_experience(request, experience_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     experience = get_object_or_404(Experience, pk=experience_id)
 
     if request.method == "POST":
@@ -173,16 +215,20 @@ def login_user(request):
     form = AuthenticationForm(request, data=request.POST or None)
 
     if request.method == "POST" and form.is_valid():
-        login(request, form.get_user())
-        return redirect("main:show_main")
+        user = form.get_user()
+        login(request, user)
+        response = redirect("main:show_main")
+        response.set_cookie('last_login', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        return response
 
     context = {
-        "name": "Burhan",
+        "name": "Clay",
         "form": form,
     }
-
     return render(request, "login.html", context)
 
 def logout_user(request):
     logout(request)
-    return redirect("main:show_main")
+    response = redirect("main:show_main")
+    response.delete_cookie('last_login')
+    return response
