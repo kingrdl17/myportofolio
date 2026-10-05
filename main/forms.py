@@ -68,6 +68,29 @@ class EducationForm(ModelForm):
             ),
         }
 
+    def clean_institution(self):
+        from django.core.exceptions import ValidationError
+        from django.utils.html import strip_tags
+        institution = strip_tags(self.cleaned_data["institution"]).strip()
+        if not institution:
+            raise ValidationError("Nama institusi tidak boleh hanya berisi tag HTML.")
+        return institution
+
+    def clean_degree(self):
+        from django.utils.html import strip_tags
+        degree = self.cleaned_data.get("degree")
+        return strip_tags(degree).strip() if degree else degree
+
+    def clean_field_of_study(self):
+        from django.utils.html import strip_tags
+        field_of_study = self.cleaned_data.get("field_of_study")
+        return strip_tags(field_of_study).strip() if field_of_study else field_of_study
+
+    def clean_description(self):
+        from django.utils.html import strip_tags
+        description = self.cleaned_data.get("description")
+        return strip_tags(description).strip() if description else description
+
 class ExperienceForm(ModelForm):
     class Meta:
         model = Experience
@@ -126,7 +149,7 @@ class ExperienceForm(ModelForm):
         from django.utils.html import strip_tags
         title = strip_tags(self.cleaned_data["title"]).strip()
         if not title:
-            raise ValidationError("Judul pengalaman tidak boleh hanya berisi tag HTML.")
+            raise ValidationError("Judul tidak boleh hanya berisi tag HTML.")
         return title
 
     def clean_description(self):

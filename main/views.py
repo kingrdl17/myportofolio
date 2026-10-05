@@ -56,19 +56,12 @@ def toggle_star(request, experience_id):
     return redirect("main:show_experience")
 
 def show_education(request):
-    json_response = get_education_json(request)
-
-    educations = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-    educations = [education.object for education in educations]
     title_query = request.GET.get("title", "").strip()
 
     context = {
         "name": "Marclay Ardell",
-        "education_list": educations,
         "title_query": title_query,
+        "form": EducationForm(),
         "is_editor": request.user.groups.filter(name="Editor").exists(),
     }
     return render(request, "education.html", context)
@@ -190,8 +183,22 @@ def get_education_json(request):
     if title_query:
         educations = educations.filter(institution__icontains=title_query)
 
-    educations_json = serializers.serialize("json", educations)
-    return HttpResponse(educations_json, content_type="application/json")
+    data = []
+    for edu in educations:
+        data.append({
+            "pk": str(edu.id),
+            "fields": {
+                "institution": edu.institution,
+                "degree": edu.degree,
+                "field_of_study": edu.field_of_study,
+                "description": edu.description,
+                "started_at": edu.started_at.isoformat(),
+                "ended_at": edu.ended_at.isoformat() if edu.ended_at else None,
+                "thumbnail": edu.thumbnail,
+            }
+        })
+
+    return JsonResponse(data, safe=False)
 
 def get_experience_json(request):
     title_query = request.GET.get("title", "").strip()
@@ -238,6 +245,21 @@ def create_experience_ajax(request):
         )
     return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
 
+@require_POST
+def create_education_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan pendidikan."},
+            status=403,
+        )
+    form = EducationForm(request.POST)
+    if form.is_valid():
+        education = form.save()
+        return JsonResponse(
+            {"message": "Pendidikan berhasil ditambahkan.", "pk": str(education.id)},
+            status=201,
+        )
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
 # ====================================================================================================== AUTH =====================================================
 def register(request):
     form = UserCreationForm(request.POST or None)
