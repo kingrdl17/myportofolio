@@ -232,7 +232,8 @@ nav a:hover {
 
 .button-neutral,
 .button-action,
-.button-danger {
+.button-danger,
+.button-star {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -251,7 +252,8 @@ nav a:hover {
 
 .button-neutral span,
 .button-action span,
-.button-danger span {
+.button-danger span,
+.button-star span {
     font-size: 1.25rem;
     line-height: 1;
 }
@@ -280,7 +282,8 @@ nav a:hover {
     background-color: var(--accent);
 }
 
-.button-action:hover {
+.button-action:hover,
+.button-star:hover {
     background-color: #ffffff;
     color: var(--accent-dark);
     text-shadow: 
@@ -715,17 +718,20 @@ nav a:hover {
 
     .star-form {
     display: inline;
+}   
 }
+
 
 .button-star {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    background: var(--ink);
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .button-star.is-starred {
-    background: var(--accent);
+    background: #dd9b00;
 }
 
 .star-count {
@@ -735,4 +741,52 @@ nav a:hover {
     font-size: 0.8rem;
 }
 
+.button-star .star-count {
+    font-size: 0.8rem;
+    line-height: 1.2;
 }
+
+/* toast */
+/* toast */
+.toast-component {
+ position: fixed;
+ inset: auto 2rem 2rem auto;
+ margin: 0;
+ padding: 1rem 1.5rem;
+ border-radius: var(--radius-sm);
+ box-shadow: 0 10px 25px rgba(28, 25, 23, 0.15);
+ display: none;
+ align-items: center;
+ gap: 1rem;
+ transition: all 0.3s ease;
+ background-color: var(--paper-darkblur);
+ border: 1px solid var(--line);
+ color: inherit;
+}
+.toast-component:popover-open {
+ display: flex;
+}
+.toast-hidden {
+ opacity: 0;
+ transform: translateY(150%);
+ pointer-events: none;
+}
+.toast-show {
+ opacity: 1;
+ transform: translateY(0);
+}
+
+.toast-title {
+ font-size: 1rem;
+ font-weight: 700;
+ margin-bottom: 0.15rem;
+ font-family: "Space Grotesk", -apple-system, sans-serif;
+}
+.toast-message {
+ font-size: 0.85rem;
+ color: var(--text-muted);
+}
+/* Modifikasi border kiri berdasarkan tipe notifikasi */
+.toast-success { border-left: 4px solid #22c55e; }
+.toast-error { border-left: 4px solid #b42318; }
+.toast-normal { border-left: 4px solid var(--accent); }
