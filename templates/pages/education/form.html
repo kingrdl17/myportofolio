@@ -2,7 +2,7 @@
 {% block content %}
     <main>
         <section class="border-t border-white/[0.12] py-16">
-            <div class="mx-auto max-w-[960px] rounded-3xl border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-8 backdrop-blur-[50px]">
+            <div class="mx-auto max-w-[960px] rounded-3xl border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-8">
                 <h1 class="mb-6 font-['Syne',sans-serif] text-3xl font-light">{% if education %}Edit Education{% else %}Add New Education{% endif %}</h1>
                 <form method="post"
                       action="{% if education %}{% url 'education:edit_education' education.id %}{% else %}{% url 'education:create_education' %}{% endif %}"

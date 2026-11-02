@@ -1,15 +1,15 @@
 {% load static %}
 <header class="sticky top-0 z-[1000] border-b border-white/10 bg-[rgba(30,30,30,0.75)] backdrop-blur-2xl">
-    <div class="mx-auto flex max-w-[960px] flex-wrap items-center justify-between gap-4 px-6 py-5">
+    <div class="mx-auto flex w-full flex-wrap items-center justify-between gap-4 px-6 py-5 md:grid md:grid-cols-[1fr_auto_1fr] md:flex-nowrap">
         <a href="{% url 'profiles:show_main' %}">
             <img src="{% static 'img/Claylogo.png' %}" alt="{{ name }} Logo" class="block h-10 w-auto object-contain">
         </a>
-        <nav class="order-3 flex basis-full items-center justify-center gap-8 md:order-none md:ml-auto md:basis-auto">
-            <a class="text-[0.95rem] lowercase text-white transition hover:text-white hover:drop-shadow-[0_0_8px_white]" href="{% url 'profiles:show_main' %}">Profile</a>
-            <a class="text-[0.95rem] lowercase text-white transition hover:text-white hover:drop-shadow-[0_0_8px_white]" href="{% url 'education:show_education' %}">Education</a>
-            <a class="text-[0.95rem] lowercase text-white transition hover:text-white hover:drop-shadow-[0_0_8px_white]" href="{% url 'experience:show_experience' %}">Experience</a>
+        <nav class="order-3 flex basis-full items-center justify-center gap-8 md:order-none md:basis-auto md:justify-self-center">
+            <a class="text-[2rem] lowercase font-extralight text-white transition hover:text-white hover:drop-shadow-[0_0_8px_white]" href="{% url 'profiles:show_main' %}">Profile</a>
+            <a class="text-[2rem] lowercase font-extralight text-white transition hover:text-white hover:drop-shadow-[0_0_8px_white]" href="{% url 'education:show_education' %}">Education</a>
+            <a class="text-[2rem] lowercase font-extralight text-white transition hover:text-white hover:drop-shadow-[0_0_8px_white]" href="{% url 'experience:show_experience' %}">Experience</a>
         </nav>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 md:justify-self-end">
             {% if user.is_authenticated %}
                 <span class="text-[0.9rem] text-[#a1a1a6]">{{ user.username }}</span>
                 <a class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border-0 bg-white/[0.08] px-[1.1rem] py-2 text-[0.85rem] font-extralight leading-[1.2] text-[#f5f5f7] no-underline transition-all duration-300 hover:bg-white hover:text-[#cfcdcd] hover:drop-shadow-[0_0_8px_white] hover:shadow-[0_0_12px_rgba(10,132,255,0.8),0_0_24px_rgba(255,255,255,0.5),0_0_36px_rgba(255,255,255,0.4)]" href="{% url 'accounts:logout' %}">Logout</a>

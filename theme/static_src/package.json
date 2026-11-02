@@ -4,6 +4,7 @@
   "scripts": {
     "build": "tailwindcss -i ./src/styles.css -o ../static/css/dist/styles.css --minify",
     "build:css": "npm run build",
+    "start": "npm run watch",
     "watch": "tailwindcss -i ./src/styles.css -o ../static/css/dist/styles.css --watch",
     "watch:css": "npm run watch"
   },
