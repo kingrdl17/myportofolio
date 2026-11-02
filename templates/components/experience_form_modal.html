@@ -1,43 +1,43 @@
 <div id="add-experience-modal"
-     class="experience-form-modal education-delete-modal"
+     class="fixed inset-0 z-10 m-0 hidden h-full w-full max-h-none max-w-none items-center justify-center border-0 bg-transparent p-4 [&:popover-open]:flex max-[600px]:items-end max-[600px]:p-0"
      popover="auto"
      role="dialog"
      aria-modal="true"
      aria-labelledby="add-experience-modal-title">
     <button type="button"
-            class="experience-form-modal__backdrop education-delete-modal__backdrop"
+            class="absolute inset-0 h-full w-full cursor-default border-0 bg-[rgba(28,25,23,0.58)] p-0 backdrop-blur-[10px]"
             popovertarget="add-experience-modal"
             popovertargetaction="hide"
             aria-label="Close add experience form"></button>
 
-    <div class="experience-form-modal__content education-delete-modal__content">
+    <div class="relative z-10 w-full max-w-[480px] rounded-xl border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-6 shadow-[0_1rem_3rem_rgba(28,25,23,0.22)] max-[600px]:max-w-full max-[600px]:rounded-t-xl max-[600px]:p-5">
         <button type="button"
-                class="experience-form-modal__close education-delete-modal__close button"
+                class="absolute right-4 top-4 cursor-pointer border-0 bg-transparent p-0 text-[1.8rem] leading-none text-[#a1a1a6]"
                 popovertarget="add-experience-modal"
                 popovertargetaction="hide"
                 aria-label="Close add experience form">×</button>
 
-        <h2 id="add-experience-modal-title">Add New Experience</h2>
+        <h2 id="add-experience-modal-title" class="mb-3 font-['Space_Grotesk',sans-serif] text-2xl text-white">Add New Experience</h2>
         <form id="experience-form"
               method="post"
-              action="{% url 'main:create_experience_ajax' %}"
-              class="experience-form">
+              action="{% url 'experience:create_experience_ajax' %}"
+              class="w-full">
             {% csrf_token %}
             {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <div class="mb-5">
+                    <label class="mb-2 block font-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
                     {{ field }}
                     {% for error in field.errors %}
-                        <p class="form-error">{{ error }}</p>
+                        <p class="mt-1 text-[0.85rem] text-[#b42318]">{{ error }}</p>
                     {% endfor %}
                 </div>
             {% endfor %}
-            <div class="experience-form-modal__actions education-delete-modal__actions">
+            <div class="mt-6 flex justify-end gap-3 max-[600px]:flex-col-reverse">
                 <button type="button"
-                        class="button-neutral"
+                        class="w-full cursor-pointer rounded-full border-0 bg-white/[0.08] px-[1.1rem] py-2 text-[0.85rem] text-[#f5f5f7] transition hover:bg-white hover:text-[#cfcdcd] sm:w-auto"
                         popovertarget="add-experience-modal"
                         popovertargetaction="hide">Cancel</button>
-                <button type="submit" class="button-action">Add Experience</button>
+                <button type="submit" class="w-full cursor-pointer rounded-full border-0 bg-[#0a84ff] px-[1.1rem] py-2 text-[0.85rem] text-white transition hover:bg-white hover:text-[#0066cc] sm:w-auto">Add Experience</button>
             </div>
         </form>
     </div>

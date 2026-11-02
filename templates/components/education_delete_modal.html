@@ -1,33 +1,16 @@
-<div id="delete-edu-{{ education.id }}"
-     class="education-delete-modal"
-     popover="auto"
-     role="dialog"
-     aria-modal="true"
-     aria-labelledby="delete-edu-title-{{ education.id }}">
-    <button type="button"
-            class="education-delete-modal__backdrop"
-            popovertarget="delete-edu-{{ education.id }}"
-            popovertargetaction="hide"
-            aria-label="Tutup konfirmasi hapus"></button>
-    <div class="education-delete-modal__content">
-        <button type="button"
-                class="education-delete-modal__close"
-                popovertarget="delete-edu-{{ education.id }}"
-                popovertargetaction="hide"
-                aria-label="Tutup konfirmasi hapus">×</button>
-        <h2 id="delete-edu-title-{{ education.id }}">Delete education?</h2>
-        <p>
-            Are you sure you want to permanently delete this?
-        </p>
-        <div class="education-delete-modal__actions">
-            <button type="button"
-                    class="button-neutral"
-                    popovertarget="delete-edu-{{ education.id }}"
-                    popovertargetaction="hide">Cancel</button>
-            <form method="post" action="{% url 'main:delete_education' education.id %}">
+<template id="delete-confirmation-template"
+          data-url-template="{% url 'education:delete_education' '00000000-0000-0000-0000-000000000000' %}">
+    <dialog class="relative m-auto hidden w-[calc(100%-2rem)] max-w-[480px] rounded-xl border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-6 text-[#f5f5f7] shadow-[0_1rem_3rem_rgba(28,25,23,0.22)] backdrop:bg-[rgba(28,25,23,0.58)] backdrop:backdrop-blur-[10px] open:block max-[600px]:fixed max-[600px]:bottom-0 max-[600px]:left-0 max-[600px]:right-0 max-[600px]:top-auto max-[600px]:w-full max-[600px]:max-w-none max-[600px]:rounded-b-none max-[600px]:rounded-t-xl max-[600px]:p-5"
+           aria-labelledby="delete-confirmation-title">
+        <button type="button" data-dialog-close class="absolute right-4 top-4 cursor-pointer border-0 bg-transparent p-0 text-[1.8rem] leading-none text-[#a1a1a6]" aria-label="Close confirmation">×</button>
+        <h2 id="delete-confirmation-title" class="mb-3 pr-8 font-['Space_Grotesk',sans-serif] text-2xl text-white">Confirm delete</h2>
+        <p class="text-white">Are you sure you want to permanently delete this?</p>
+        <div class="mt-6 flex justify-end gap-3 max-[600px]:flex-col-reverse">
+            <button type="button" data-dialog-close class="w-auto cursor-pointer rounded-full border-0 bg-white/[0.08] px-[1.1rem] py-2 text-[0.85rem] text-[#f5f5f7] transition hover:bg-white hover:text-[#cfcdcd] max-[600px]:w-full">Cancel</button>
+            <form method="post" class="max-[600px]:w-full">
                 {% csrf_token %}
-                <button type="submit" class="button-danger">DELETE</button>
+                <button type="submit" class="w-auto cursor-pointer rounded-full border-0 bg-[#b42318] px-[1.1rem] py-2 text-[0.85rem] text-white transition hover:bg-white hover:text-[#b42318] max-[600px]:w-full">DELETE</button>
             </form>
         </div>
-    </div>
-</div>
+    </dialog>
+</template>

@@ -4,14 +4,14 @@
 {% endblock meta %}
 {% block content %}
     <main>
-        <section class="experience-section" id="education">
-            <div class="container">
-                <p class="section-kicker">Academic background</p>
-                <div class="education-header">
-                    <h1>Education</h1>
+        <section class="border-t border-white/[0.12] py-16" id="education">
+            <div class="mx-auto max-w-[960px] rounded-3xl border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-8 backdrop-blur-[50px]">
+                <p class="text-[0.8rem] font-bold uppercase text-[#0066cc]">Academic background</p>
+                <div class="mb-6 flex w-full items-center justify-between gap-4 max-[600px]:flex-col max-[600px]:items-start">
+                    <h1 class="my-2 flex items-center font-['Syne',sans-serif] text-3xl font-light">Education</h1>
                     {% if user.is_superuser %}
                     <button type="button"
-                            class="button-action"
+                            class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border-0 bg-[#0a84ff] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-white no-underline transition-all duration-300 hover:bg-white hover:text-[#0066cc] hover:drop-shadow-[0_0_8px_white] hover:shadow-[0_0_12px_rgba(10,132,255,0.8),0_0_24px_rgba(10,132,255,0.5),0_0_36px_rgba(10,132,255,0.3)]"
                             popovertarget="add-education-modal">
                         <span aria-hidden="true">+</span>
                         Add New
@@ -19,31 +19,31 @@
                     {% endif %} 
                 </div>
 
-                <form id="education-search-form" class="education-search">
+                <form id="education-search-form" class="mb-6 flex gap-3 max-[600px]:flex-col">
                     <input type="search"
                             id="search-input"
                             name="title"
                             value="{{ title_query }}"
                             placeholder="Cari berdasarkan nama institusi"
-                            class="education-search__input"
+                            class="min-w-0 w-full rounded-full border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-[0.7rem] text-[#f5f5f7] placeholder:text-[#a1a1a6] focus:border-[#0a84ff] focus:outline focus:outline-2 focus:outline-[#0a84ff]"
                             aria-label="Cari berdasarkan nama institusi">
-                    <button type="submit" class="button-action">Search</button>
+                    <button type="submit" class="w-full cursor-pointer rounded-full border-0 bg-[#0a84ff] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-white transition-colors hover:bg-white hover:text-[#0066cc] sm:w-auto">Search</button>
                 </form>
                 
                 <!-- Loading State -->
-                <div id="loading" class="empty-state hide">
-                    <p>Memuat data pendidikan...</p>
+                    <div id="loading" class="hidden text-[#a1a1a6]">
+                    <p class="text-[#a1a1a6]">Memuat data pendidikan...</p>
                 </div>
                 <!-- Error State -->
-                <div id="error" class="empty-state hide">
-                    <p>Gagal memuat data pendidikan. Silakan coba lagi.</p>
+                    <div id="error" class="hidden text-[#a1a1a6]">
+                    <p class="text-[#a1a1a6]">Gagal memuat data pendidikan. Silakan coba lagi.</p>
                 </div>
                 <!-- Empty State -->
-                <div id="empty" class="empty-state hide">
-                    <p>Nothing here for now.</p>
+                    <div id="empty" class="hidden text-[#a1a1a6]">
+                    <p class="text-[#a1a1a6]">Nothing here for now.</p>
                 </div>
                 <!-- Education Grid -->
-                <div id="grid" class="experience-grid education-grid hide"></div>
+                <div id="grid" class="hidden grid grid-cols-2 gap-4 max-[600px]:grid-cols-1"></div>
             </div>
         </section>
     </main>
@@ -51,11 +51,14 @@
 {% if user.is_superuser %}
     {% include "components/education_form_modal.html" %}
 {% endif %}
+{% include "components/education_delete_modal.html" %}
 
+{% load static %}
+<script src="{% static 'js/delete-modal.js' %}" defer></script>
 <script>
     // Konfigurasi
-    const BASE_EDUCATIONS_ENDPOINT = "{% url 'main:get_education_json' %}";
-    const CREATE_EDUCATION_ENDPOINT = "{% url 'main:create_education_ajax' %}";
+    const BASE_EDUCATIONS_ENDPOINT = "{% url 'education:get_education_json' %}";
+    const CREATE_EDUCATION_ENDPOINT = "{% url 'education:create_education_ajax' %}";
     const IS_SUPERUSER = "{{ user.is_superuser|yesno:'true,false' }}" === "true";
     const IS_EDITOR = "{{ is_editor|yesno:'true,false' }}" === "true";
     let educationsAbortController;
@@ -74,10 +77,10 @@
 
     // Menyembunyikan/Menampilkan section halaman
     function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
-        loadingState.classList.toggle('hide', !showLoading);
-        errorState.classList.toggle('hide', !showError);
-        emptyState.classList.toggle('hide', !showEmpty);
-        gridContainer.classList.toggle('hide', !showGrid);
+        loadingState.classList.toggle('hidden', !showLoading);
+        errorState.classList.toggle('hidden', !showError);
+        emptyState.classList.toggle('hidden', !showEmpty);
+        gridContainer.classList.toggle('hidden', !showGrid);
     }
 
     // Mengubah karakter khusus HTML menjadi entity agar aman dari XSS
@@ -102,10 +105,10 @@
         const education = item.fields;
         const educationId = item.pk;
         const articleElement = document.createElement('article');
-        articleElement.className = 'experience-card';
+        articleElement.className = 'flex flex-col rounded-xl border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-5';
 
         const imageHtml = education.thumbnail
-            ? `<img src="${escapeHtml(education.thumbnail)}" alt="Gambar ${escapeHtml(education.institution)}" class="education-image">`
+            ? `<img src="${escapeHtml(education.thumbnail)}" alt="Gambar ${escapeHtml(education.institution)}" class="block h-auto w-full rounded-xl border border-black">`
             : '';
 
         let categoryText = '';
@@ -117,38 +120,35 @@
             categoryText = escapeHtml(education.field_of_study);
         }
 
-        const categoryHtml = categoryText ? `<span class="experience-category">${categoryText}</span>` : '';
-        const descHtml = education.description ? `<p class="experience-description">${escapeHtml(education.description)}</p>` : '';
+        const categoryHtml = categoryText ? `<span class="text-[0.75rem] font-bold uppercase text-[#0066cc]">${categoryText}</span>` : '';
+        const descHtml = education.description ? `<p class="text-[#a1a1a6]">${escapeHtml(education.description)}</p>` : '';
 
         const startYear = formatYear(education.started_at);
         const endYear = education.ended_at ? formatYear(education.ended_at) : 'Present';
-        const periodHtml = startYear ? `<p class="experience-description">${escapeHtml(startYear)} &mdash; ${escapeHtml(endYear)}</p>` : '';
+        const periodHtml = startYear ? `<p class="text-[#a1a1a6]">${escapeHtml(startYear)} &mdash; ${escapeHtml(endYear)}</p>` : '';
 
-        const deleteUrl = "{% url 'main:delete_education' '00000000-0000-0000-0000-000000000000' %}"
+        const deleteUrl = "{% url 'education:delete_education' '00000000-0000-0000-0000-000000000000' %}"
             .replace('00000000-0000-0000-0000-000000000000', educationId);
-        const editUrl = "{% url 'main:edit_education' '00000000-0000-0000-0000-000000000000' %}"
+        const editUrl = "{% url 'education:edit_education' '00000000-0000-0000-0000-000000000000' %}"
             .replace('00000000-0000-0000-0000-000000000000', educationId);
 
         let actionsHtml = '';
         if (IS_SUPERUSER || IS_EDITOR) {
             const deleteHtml = IS_SUPERUSER
-                ? `<form method="post" action="${deleteUrl}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="button button-danger" onclick="return confirm('Yakin ingin menghapus pendidikan ini?');">Delete</button>
-                   </form>`
+                ? `<button type="button" data-delete-url="${deleteUrl}" class="inline-flex cursor-pointer items-center justify-center rounded-full border-0 bg-[#b42318] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-white transition-all hover:bg-white hover:text-[#b42318] hover:shadow-[0_0_12px_rgba(180,35,24,0.8)]">Delete</button>`
                 : '';
             actionsHtml = `
-                <div class="education-card-actions">
-                    <div class="education-actions">
+                <div class="mt-auto flex flex-col">
+                    <div class="mt-4 flex flex-wrap items-center gap-5">
                         ${deleteHtml}
-                        <a href="${editUrl}" class="button button-neutral" title="Edit">Edit</a>
+                        <a href="${editUrl}" class="inline-flex items-center justify-center rounded-full bg-white/[0.08] px-[1.1rem] py-2 text-[0.85rem] text-[#f5f5f7] no-underline transition-all hover:bg-white hover:text-[#cfcdcd]" title="Edit">Edit</a>
                     </div>
                 </div>`;
         }
 
         const completeCardHtml = `
             ${imageHtml}
-            <h2>${escapeHtml(education.institution)}</h2>
+            <h2 class="my-2 text-xl text-white">${escapeHtml(education.institution)}</h2>
             ${categoryHtml}
             ${descHtml}
             ${periodHtml}

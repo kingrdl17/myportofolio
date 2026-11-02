@@ -1,46 +1,21 @@
-{% load static %}
+{% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="icon" type="image/png" href="/static/img/favicon.png">
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
     <title>{{ name }} - Portofolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Alata&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
+    {% tailwind_css %}
 </head>
-<body>
-    <header class="site-header">
-        <div class="container">
-            <a href="{% url 'main:show_main' %}">
-                <img src="/static/img/Claylogo.png" alt="{{ name }} Logo" class="brand-logo">
-            </a>
-            <nav>
-                <a href="{% url 'main:show_main' %}">Profile</a>
-                <a href="{% url 'main:show_education' %}">Education</a>
-                <a href="{% url 'main:show_experience' %}">Experience</a>
-            </nav>
-            <div class="header-auth">
-                {% if user.is_authenticated %}
-                    <span class="nav-user">{{ user.username }}</span>
-                    <a class="button-neutral" href="{% url 'main:logout' %}">Logout</a>
-                {% else %}
-                    <a class="button-neutral" href="{% url 'main:login' %}">Login</a>
-                    <a class="button-neutral" href="{% url 'main:register' %}">Register</a>
-                {% endif %}
-            </div>
-        </div>
-    </header>
+<body class="min-h-screen bg-[url('/static/img/background.png')] bg-cover bg-center bg-fixed bg-no-repeat font-sans leading-[1.6] text-[#f5f5f7]">
+    {% include "components/navbar.html" %}
     {% block content %} {% endblock content %}
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
-        </div>
-    </footer>
+    {% include "components/footer.html" %}
     {% include 'components/toast.html' %}
 </body>
 </html>

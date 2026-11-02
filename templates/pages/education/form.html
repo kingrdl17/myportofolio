@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+    <main>
+        <section class="border-t border-white/[0.12] py-16">
+            <div class="mx-auto max-w-[960px] rounded-3xl border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-8 backdrop-blur-[50px]">
+                <h1 class="mb-6 font-['Syne',sans-serif] text-3xl font-light">{% if education %}Edit Education{% else %}Add New Education{% endif %}</h1>
+                <form method="post"
+                      action="{% if education %}{% url 'education:edit_education' education.id %}{% else %}{% url 'education:create_education' %}{% endif %}"
+                      class="mt-6 w-full">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-5">
+                            <label class="mb-2 block font-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <p class="mt-1 text-[0.85rem] text-[#b42318]">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="inline-flex cursor-pointer items-center justify-center rounded-full border-0 bg-[#0a84ff] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-white transition-all hover:bg-white hover:text-[#0066cc]">{% if education %}Save Changes{% else %}Add education{% endif %}</button>
+                    <a href="{% url 'education:show_education' %}" class="ml-2 inline-flex items-center justify-center rounded-full bg-white/[0.08] px-[1.1rem] py-2 text-[0.85rem] text-[#f5f5f7] no-underline transition hover:bg-white hover:text-[#cfcdcd]">Cancel</a>
+                </form>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

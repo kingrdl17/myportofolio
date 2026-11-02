@@ -1,86 +1,40 @@
-from django.test import TestCase
+from django.test import SimpleTestCase
 from django.urls import reverse
-from django.utils import timezone
-
-from main.models import Experience
 
 
-class MainTest(TestCase):
-    def setUp(self):
-        self.experience = Experience.objects.create(
-            title="Asisten Dosen PBP",
-            description="Membantu mahasiswa memahami pengembangan web.",
-            category="part-time",
+class LegacyMainRouteTests(SimpleTestCase):
+    def test_legacy_route_names_preserve_existing_paths(self):
+        route_pairs = (
+            ("show_main", "profiles:show_main"),
+            ("show_education", "education:show_education"),
+            ("show_experience", "experience:show_experience"),
+            ("create_education", "education:create_education"),
+            ("create_experience", "experience:create_experience"),
+            ("get_education_json", "education:get_education_json"),
+            ("get_experience_json", "experience:get_experience_json"),
+            ("create_education_ajax", "education:create_education_ajax"),
+            ("create_experience_ajax", "experience:create_experience_ajax"),
+            ("register", "accounts:register"),
+            ("login", "accounts:login"),
+            ("logout", "accounts:logout"),
         )
 
-    def test_main_url_is_accessible(self):
-        response = self.client.get(reverse("main:show_main"))
+        for legacy_name, feature_name in route_pairs:
+            with self.subTest(route=legacy_name):
+                self.assertEqual(reverse(f"main:{legacy_name}"), reverse(feature_name))
 
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "index.html")
-        self.assertNotContains(response, self.experience.title)
-        self.assertContains(response, f'href="{reverse("main:show_experience")}"')
-
-    def test_nonexistent_page_returns_404(self):
-        response = self.client.get("/halaman-yang-tidak-ada/")
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_experience_model(self):
-        self.assertEqual(str(self.experience), "Asisten Dosen PBP")
-        self.assertEqual(self.experience.category, "part-time")
-        self.assertTrue(self.experience.is_ongoing)
-
-    def test_experience_page(self):
-        response = self.client.get(reverse("main:show_experience"))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "experience.html")
-        self.assertContains(response, self.experience.title)
-        self.assertContains(response, self.experience.description)
-        self.assertContains(response, "Part-Time")
-        self.assertContains(response, "Sedang berlangsung")
-        self.assertContains(response, f'href="{reverse("main:show_main")}"')
-
-    def test_empty_experience_page(self):
-        Experience.objects.all().delete()
-        response = self.client.get(reverse("main:show_experience"))
-
-        self.assertContains(response, "Nothing here for now.")
-
-    def test_completed_experience(self):
-        self.experience.ended_at = timezone.now()
-        self.experience.save()
-        response = self.client.get(reverse("main:show_experience"))
-
-        self.assertFalse(self.experience.is_ongoing)
-        self.assertContains(response, "Selesai")
-        self.assertNotContains(response, "Sedang berlangsung")
-
-    def test_education_accessibility(self):
-        response = self.client.get(reverse("main:show_education"))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "education.html")
-        self.assertContains(response, f'href="{reverse("main:show_main")}"')
-
-    def test_education_model(self):
-        from main.models import Education
-
-        education = Education.objects.create(
-            institution="Universitas Indonesia",
-            degree="S1",
-            field_of_study="Sistem Informasi",
-            started_at=timezone.now().date(),
+    def test_legacy_object_routes_preserve_existing_paths(self):
+        route_pairs = (
+            ("edit_education", "education:edit_education", {"education_id": "00000000-0000-0000-0000-000000000001"}),
+            ("delete_education", "education:delete_education", {"education_id": "00000000-0000-0000-0000-000000000001"}),
+            ("edit_experience", "experience:edit_experience", {"experience_id": "00000000-0000-0000-0000-000000000002"}),
+            ("delete_experience", "experience:delete_experience", {"experience_id": "00000000-0000-0000-0000-000000000002"}),
+            ("toggle_star", "experience:toggle_star", {"experience_id": "00000000-0000-0000-0000-000000000002"}),
         )
 
-        self.assertEqual(str(education), "S1 at Universitas Indonesia")
-        self.assertTrue(education.is_ongoing)
-
-    def test_education_empty(self):
-        from main.models import Education
-
-        Education.objects.all().delete()
-        response = self.client.get(reverse("main:show_education"))
-
-        self.assertContains(response, "Nothing here for now.")
+        for legacy_name, feature_name, kwargs in route_pairs:
+            with self.subTest(route=legacy_name):
+                self.assertEqual(
+                    reverse(f"main:{legacy_name}", kwargs=kwargs),
+                    reverse(feature_name, kwargs=kwargs),
+                )

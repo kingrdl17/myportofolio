@@ -7,16 +7,15 @@ function showToast(title, message, type = 'normal', duration = 3000) {
 
   if (!toastComponent) return;
 
-  // Hapus class tipe sebelumnya
-  toastComponent.classList.remove('toast-success', 'toast-error', 'toast-normal');
+  toastComponent.classList.remove('border-green-500', 'border-[#b42318]', 'border-[#0a84ff]');
+  toastComponent.classList.add('border-l-4');
 
-  // Terapkan class baru berdasarkan tipe
   if (type === 'success') {
-      toastComponent.classList.add('toast-success');
+      toastComponent.classList.add('border-green-500');
   } else if (type === 'error') {
-      toastComponent.classList.add('toast-error');
+      toastComponent.classList.add('border-[#b42318]');
   } else {
-      toastComponent.classList.add('toast-normal');
+      toastComponent.classList.add('border-[#0a84ff]');
   }
 
   // Perbarui konten teks
@@ -26,18 +25,25 @@ function showToast(title, message, type = 'normal', duration = 3000) {
   // Batalkan timer sebelumnya jika toast masih tampil
   clearTimeout(toastTimer);
 
-  // Animasi muncul
   if (!toastComponent.matches(':popover-open')) {
       toastComponent.showPopover();
-      void toastComponent.offsetHeight; // paksa browser menghitung style agar transisi berjalan
+      requestAnimationFrame(() => {
+        toastComponent.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
+        toastComponent.classList.add('opacity-100', 'translate-y-0');
+      });
+  } else {
+      toastComponent.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
+      toastComponent.classList.add('opacity-100', 'translate-y-0');
   }
-  toastComponent.classList.remove('toast-hidden');
-  toastComponent.classList.add('toast-show');
 
-  // Animasi hilang otomatis
+  clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
-      toastComponent.classList.remove('toast-show');
-      toastComponent.classList.add('toast-hidden');
-      toastTimer = setTimeout(() => toastComponent.hidePopover(), 300);
+      toastComponent.classList.remove('opacity-100', 'translate-y-0');
+      toastComponent.classList.add('opacity-0', 'translate-y-8', 'pointer-events-none');
+      toastTimer = setTimeout(() => {
+        if (toastComponent.matches(':popover-open')) {
+          toastComponent.hidePopover();
+        }
+      }, 300);
   }, duration);
 }

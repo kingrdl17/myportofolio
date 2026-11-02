@@ -1,5 +1,4 @@
-from django.shortcuts import render
+from profiles.views import show_main
 
 
-def landing_page(request):
-    return render(request, "index.html")
+landing_page = show_main

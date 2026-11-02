@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@source "../../../templates/**/*.html";
+@source "../../../static/js/**/*.js";
+@source "../../../accounts/**/*.py";
+@source "../../../education/**/*.py";
+@source "../../../experience/**/*.py";

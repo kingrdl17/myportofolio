@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block meta %}
+    <title>Login - {{ name }}</title>
+{% endblock meta %}
+{% block content %}
+    <main>
+        <section class="border-t border-white/[0.12] py-16">
+            <div class="mx-auto max-w-[960px] rounded-3xl border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-8 backdrop-blur-[50px]">
+                <h1 class="font-['Syne',sans-serif] text-3xl font-light">Login</h1>
+                {% for message in messages %}
+                    <p class="my-3 text-[#a1a1a6]">{{ message }}</p>
+                {% endfor %}
+                <form method="post" action="{% url 'accounts:login' %}" class="mt-6 w-full">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-5">
+                            <label class="mb-2 block font-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <p class="mt-1 text-[0.85rem] text-[#b42318]">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <p class="mt-1 text-[0.85rem] text-[#b42318]">{{ error }}</p>
+                    {% endfor %}
+                    <button type="submit" class="inline-flex cursor-pointer items-center justify-center rounded-full border-0 bg-[#0a84ff] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-white transition-all hover:bg-white hover:text-[#0066cc]">Login</button>
+                </form>
+                <p class="mt-4 text-white">No account yet? <a class="text-[#60a5fa] underline" href="{% url 'accounts:register' %}">Register</a>.</p>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

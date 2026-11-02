@@ -1,10 +1,10 @@
-<form method="post" action="{% url 'main:toggle_star' experience.id %}" class="star-form">
+<form method="post" action="{% url 'experience:toggle_star' experience.id %}" class="inline-block">
     {% csrf_token %}
     <button type="submit"
-            class="button button-star{% if user in experience.starred_by.all %} is-starred{% endif %}"
+            class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border-0 px-[1.1rem] py-2 text-[0.85rem] text-[#f5f5f7] transition-all hover:bg-white hover:text-[#0066cc] {% if user in experience.starred_by.all %}bg-[#dd9b00]{% else %}bg-white/[0.08]{% endif %}"
             title="{% if experience.starred_by.all %}Dibintangi oleh {{ experience.starred_by.all|join:', ' }}{% else %}Be the first to star this{% endif %}">
         <span aria-hidden="true">★</span>
         {% if user in experience.starred_by.all %}Unstar{% else %}Star{% endif %}
-        <span class="star-count">{{ experience.starred_by.count }}</span>
+        <span class="rounded-full bg-white/25 px-2 text-[0.8rem] leading-5">{{ experience.starred_by.count }}</span>
     </button>
 </form>

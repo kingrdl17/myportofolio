@@ -12,9 +12,21 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 from pathlib import Path
 import os
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
-# Load environment variables from .env file
-load_dotenv()
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / ".env")
+
+PRODUCTION = os.getenv("PRODUCTION", "False").lower() == "true"
+DEBUG = os.getenv("DEBUG", "False" if PRODUCTION else "True").lower() == "true"
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    if PRODUCTION:
+        raise ImproperlyConfigured("Set SECRET_KEY in the production environment.")
+    SECRET_KEY = "django-insecure-local-development-only"
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "marclay-ardell-portofolio.pws.cs.ui.ac.id"]
 
@@ -22,19 +34,8 @@ CSRF_TRUSTED_ORIGINS = [
     "https://marclay-ardell-portofolio.pws.cs.ui.ac.id",
 ]
 
-PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-omoi%yn+f2_v*ov@oux5c+bfjm19yh!uane!(%utdz*-q6=738'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 
 # Application definition
@@ -46,8 +47,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tailwind',
+    'theme.apps.ThemeConfig',
     'main',
+    'profiles.apps.ProfilesConfig',
+    'accounts.apps.AccountsConfig',
+    'education.apps.EducationConfig',
+    'experience.apps.ExperienceConfig',
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ['django_browser_reload']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -59,6 +69,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE += ['django_browser_reload.middleware.BrowserReloadMiddleware']
 
 ROOT_URLCONF = 'portofolio.urls'
 
@@ -145,6 +158,11 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 WHITENOISE_USE_FINDERS = True
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+TAILWIND_APP_NAME = 'theme'
+TAILWIND_CSS_PATH = 'css/dist/styles.css'
+NPM_BIN_PATH = os.getenv('NPM_BIN_PATH', 'npm.cmd' if os.name == 'nt' else 'npm')
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration

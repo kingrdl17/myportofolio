@@ -1,45 +1,4 @@
-import uuid
-from django.db import models
-from django.contrib.auth.models import User
-from django.utils import timezone
+from education.models import Education
+from experience.models import Experience
 
-class Experience(models.Model):
-    EXPERIENCE_CHOICES = [
-        ('internship', 'Internship'),
-        ('research', 'Research'),
-        ('volunteer', 'Volunteer'),
-        ('part-time', 'Part-Time'),
-        ('full-time', 'Full-Time'),
-        ('freelance', 'Freelance'),
-    ]
-    
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    category = models.CharField(max_length=20, choices=EXPERIENCE_CHOICES, default='full-time')
-    thumbnail = models.URLField(blank=True, null=True)
-    started_at = models.DateTimeField(default=timezone.now)
-    ended_at = models.DateTimeField(blank=True, null=True)
-    starred_by = models.ManyToManyField(User, related_name="starred_experiences", blank=True)
-    def __str__(self):
-        return self.title
-    
-    @property
-    def is_ongoing(self):
-        return self.ended_at is None
-
-class Education(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    institution = models.CharField(max_length=255)
-    degree = models.CharField(max_length=255, blank=True, null=True)
-    field_of_study = models.CharField(max_length=255, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    thumbnail = models.URLField(blank=True, null=True)
-    started_at = models.DateField()
-    ended_at = models.DateField(blank=True, null=True)
-    def __str__(self):
-        return f"{self.degree} at {self.institution}" if self.degree else self.institution
-    
-    @property
-    def is_ongoing(self):
-        return self.ended_at is None
+__all__ = ["Education", "Experience"]

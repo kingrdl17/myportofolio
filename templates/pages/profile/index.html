@@ -1,0 +1,46 @@
+  {% extends 'base.html' %}
+  {% load static %}
+  {% block content %}
+    <main>
+        <!-- PROFILE SECTION -->
+        <section class="py-12" id="profile">
+            <div class="mx-auto grid max-w-[960px] grid-cols-1 gap-x-12 gap-y-6 rounded-3xl border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-8 backdrop-blur-[50px] [grid-template-areas:'identity'_'photo'_'details'] min-[601px]:grid-cols-[1.3fr_1fr] min-[601px]:[grid-template-areas:'identity_photo'_'details_photo']">
+                <div class="[grid-area:identity]">
+                    <p class="mb-3 text-[0.85rem] font-bold lowercase tracking-[0.08em]">
+                        <span class="text-[#f87171]">Computer</span>
+                        <span class="text-[#60a5fa]">Science</span>
+                        <span>&middot;</span>
+                        <span class="text-[#f5c542]">Universitas Indonesia</span>
+                    </p>
+                    <h1 class="font-['Syne',sans-serif] text-[clamp(3rem,7vw,5rem)] font-light lowercase leading-[0.95] tracking-[-0.05em]">{{ name }}</h1>
+                </div>
+                <div class="relative self-center [grid-area:photo] max-[600px]:max-w-[220px]">
+                    <div class="absolute bottom-0 left-0 z-0 h-3/4 w-full rounded-3xl border border-white/10 bg-[#0a84ff]"></div>
+                    <img class="relative z-10 block aspect-square w-full object-contain drop-shadow-[5px_5px_5px_rgba(0,0,0,0.5)]" src="{% static 'img/clay.png' %}" alt="Photo of {{ name }}">
+                </div>
+                <div class="[grid-area:details]">
+                    <p class="mb-6 max-w-[480px] text-[#a1a1a6]">{{ bio }}</p>
+                    <dl class="mb-6 flex flex-wrap gap-8">
+                        <div class="meta-row">
+                            <dt class="mb-1 text-[0.75rem] uppercase tracking-[0.06em] text-[#a1a1a6]">NPM</dt>
+                            <dd class="font-semibold">{{ npm }}</dd>
+                        </div>
+                        <div class="meta-row">
+                            <dt class="mb-1 text-[0.75rem] uppercase tracking-[0.06em] text-[#a1a1a6]">Program</dt>
+                            <dd class="font-semibold">{{ study_program }}</dd>
+                        </div>
+                        <div class="meta-row">
+                            <dt class="mb-1 text-[0.75rem] uppercase tracking-[0.06em] text-[#a1a1a6]">Last login session</dt>
+                            <dd class="font-semibold">{{ last_login }}</dd>
+                        </div>
+                    </dl>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="https://github.com/kingrdl17" class="inline-flex items-center justify-center rounded-full bg-white/[0.08] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-[#f5f5f7] no-underline transition-all duration-300 hover:bg-white hover:text-[#cfcdcd] hover:drop-shadow-[0_0_8px_white]">GitHub</a>
+                        <a href="https://linkedin.com/in/marclayardell" class="inline-flex items-center justify-center rounded-full bg-white/[0.08] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-[#f5f5f7] no-underline transition-all duration-300 hover:bg-white hover:text-[#cfcdcd] hover:drop-shadow-[0_0_8px_white]">LinkedIn</a>
+                        <a href="mailto:ardellmarclay@gmail.com" class="inline-flex items-center justify-center rounded-full bg-white/[0.08] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-[#f5f5f7] no-underline transition-all duration-300 hover:bg-white hover:text-[#cfcdcd] hover:drop-shadow-[0_0_8px_white]">Email</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    {% endblock content %}
