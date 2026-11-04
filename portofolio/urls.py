@@ -25,6 +25,8 @@ urlpatterns = [
     path("", include(("experience.urls", "experience"), namespace="experience")),
     path("", include(("accounts.urls", "accounts"), namespace="accounts")),
     path("", include(("main.urls", "main"), namespace="main")),
+    path("api/v1/", include("main.api_urls")),
+    path("api-auth/", include("rest_framework.urls"))
 ]
 
 if settings.DEBUG:
