@@ -21,8 +21,10 @@ class ExperienceFeatureTests(TestCase):
         self.assertTemplateUsed(page, "components/experience_delete_modal.html")
         self.assertContains(page, 'id="delete-confirmation-template"')
         self.assertContains(page, "open:block")
-        self.assertContains(page, 'src="/static/js/delete-modal.js"')
+        self.assertContains(page, 'src="/static/js/delete-modal.js?v=2"')
         self.assertNotContains(page, "onclick=\"return confirm(")
+        self.assertNotContains(page, "window.confirm(")
+        self.assertContains(page, "window.confirmDelete()")
 
         response = self.client.get(reverse("experience:get_experience_json"))
         self.assertEqual(response.status_code, 200)

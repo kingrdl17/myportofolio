@@ -1,5 +1,6 @@
 import uuid
 
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -12,6 +13,12 @@ class Education(models.Model):
     thumbnail = models.URLField(blank=True, null=True)
     started_at = models.DateField()
     ended_at = models.DateField(blank=True, null=True)
+    starred_by = models.ManyToManyField(
+        User,
+        related_name="starred_educations",
+        blank=True,
+        db_table="main_education_starred_by",
+    )
 
     class Meta:
         db_table = "main_education"

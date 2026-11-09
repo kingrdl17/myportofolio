@@ -22,8 +22,10 @@ class EducationFeatureTests(TestCase):
         self.assertTemplateUsed(page, "components/education_delete_modal.html")
         self.assertContains(page, 'id="delete-confirmation-template"')
         self.assertContains(page, "open:block")
-        self.assertContains(page, 'src="/static/js/delete-modal.js"')
+        self.assertContains(page, 'src="/static/js/delete-modal.js?v=2"')
         self.assertNotContains(page, "onclick=\"return confirm(")
+        self.assertNotContains(page, "window.confirm(")
+        self.assertContains(page, "window.confirmDelete()")
         self.assertContains(page, f'href="{reverse("profiles:show_main")}"')
 
         response = self.client.get(reverse("education:get_education_json"), {"title": "Indonesia"})

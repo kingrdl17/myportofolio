@@ -53,7 +53,7 @@
 
 {% load static %}
 {% csrf_token %}
-<script src="{% static 'js/delete-modal.js' %}" defer></script>
+<script src="{% static 'js/delete-modal.js' %}?v=2" defer></script>
 <script>
         const BASE_EXPERIENCES_ENDPOINT = "{% url 'api:experience-list' %}";
     const DETAIL_EXPERIENCE_ENDPOINT = "{% url 'api:experience-detail' '00000000-0000-0000-0000-000000000000' %}";
@@ -226,10 +226,10 @@
         if (!button || button.disabled) return;
 
         const action = button.dataset.action;
-        if (action === 'delete' && !window.confirm('Hapus pengalaman ini?')) return;
-
-        button.disabled = true;
         try {
+            if (action === 'delete' && !(await window.confirmDelete())) return;
+
+            button.disabled = true;
             const pattern = action === 'star' ? STAR_EXPERIENCE_ENDPOINT : DETAIL_EXPERIENCE_ENDPOINT;
             await writeExperience(
                 experienceEndpoint(pattern, button.dataset.id),
