@@ -97,3 +97,10 @@ def post_star(request, post_id):
     else:
         post.starred_by.add(request.user)
     return Response(PostSerializer(post, context={"request": request}).data)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def api_logout(request):
+    if request.auth is not None:
+        request.auth.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
