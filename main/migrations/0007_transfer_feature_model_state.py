@@ -3,8 +3,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("education", "0001_adopt_existing_education"),
-        ("experience", "0001_adopt_existing_experience"),
+        ("post", "0001_adopt_existing_education"),
+        ("projects", "0001_adopt_existing_experience"),
         ("main", "0006_experience_starred_by"),
     ]
 

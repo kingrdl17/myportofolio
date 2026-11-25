@@ -53,8 +53,8 @@ INSTALLED_APPS = [
     'main',
     'profiles.apps.ProfilesConfig',
     'accounts.apps.AccountsConfig',
-    'education.apps.EducationConfig',
-    'experience.apps.ExperienceConfig',
+    'post.apps.PostConfig',
+    'projects.apps.ProjectsConfig',
 ]
 
 if DEBUG:

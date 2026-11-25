@@ -6,14 +6,14 @@ class LegacyMainRouteTests(SimpleTestCase):
     def test_legacy_route_names_preserve_existing_paths(self):
         route_pairs = (
             ("show_main", "profiles:show_main"),
-            ("show_education", "education:show_education"),
-            ("show_experience", "experience:show_experience"),
-            ("create_education", "education:create_education"),
-            ("create_experience", "experience:create_experience"),
-            ("get_education_json", "education:get_education_json"),
-            ("get_experience_json", "experience:get_experience_json"),
-            ("create_education_ajax", "education:create_education_ajax"),
-            ("create_experience_ajax", "experience:create_experience_ajax"),
+            ("show_post", "post:show_post"),
+            ("show_projects", "projects:show_projects"),
+            ("create_post", "post:create_post"),
+            ("create_projects", "projects:create_projects"),
+            ("get_post_json", "post:get_post_json"),
+            ("get_projects_json", "projects:get_projects_json"),
+            ("create_post_ajax", "post:create_post_ajax"),
+            ("create_projects_ajax", "projects:create_projects_ajax"),
             ("register", "accounts:register"),
             ("login", "accounts:login"),
             ("logout", "accounts:logout"),
@@ -25,11 +25,11 @@ class LegacyMainRouteTests(SimpleTestCase):
 
     def test_legacy_object_routes_preserve_existing_paths(self):
         route_pairs = (
-            ("edit_education", "education:edit_education", {"education_id": "00000000-0000-0000-0000-000000000001"}),
-            ("delete_education", "education:delete_education", {"education_id": "00000000-0000-0000-0000-000000000001"}),
-            ("edit_experience", "experience:edit_experience", {"experience_id": "00000000-0000-0000-0000-000000000002"}),
-            ("delete_experience", "experience:delete_experience", {"experience_id": "00000000-0000-0000-0000-000000000002"}),
-            ("toggle_star", "experience:toggle_star", {"experience_id": "00000000-0000-0000-0000-000000000002"}),
+            ("edit_post", "post:edit_post", {"post_id": "00000000-0000-0000-0000-000000000001"}),
+            ("delete_post", "post:delete_post", {"post_id": "00000000-0000-0000-0000-000000000001"}),
+            ("edit_projects", "projects:edit_projects", {"projects_id": "00000000-0000-0000-0000-000000000002"}),
+            ("delete_projects", "projects:delete_projects", {"projects_id": "00000000-0000-0000-0000-000000000002"}),
+            ("toggle_star", "projects:toggle_star", {"projects_id": "00000000-0000-0000-0000-000000000002"}),
         )
 
         for legacy_name, feature_name, kwargs in route_pairs:

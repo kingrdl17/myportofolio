@@ -5,7 +5,7 @@
             <div class="mx-auto max-w-[960px] rounded-3xl border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-8">
                 <h1 class="mb-6 font-['Syne',sans-serif] text-3xl font-light">{% if project %}Edit Project{% else %}Add New Project{% endif %}</h1>
                 <form method="post"
-                      action="{% if project %}{% url 'project:edit_project' project.id %}{% else %}{% url 'project:create_project' %}{% endif %}"
+                      action="{% if project %}{% url 'projects:edit_project' project.id %}{% else %}{% url 'projects:create_project' %}{% endif %}"
                       class="mt-6 w-full">
                     {% csrf_token %}
                     {% for field in form %}
@@ -18,7 +18,7 @@
                         </div>
                     {% endfor %}
                     <button type="submit" class="inline-flex cursor-pointer items-center justify-center rounded-full border-0 bg-[#0a84ff] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-white transition-all hover:bg-white hover:text-[#0066cc]">{% if project %}Save Changes{% else %}Add Project{% endif %}</button>
-                    <a href="{% url 'project:show_project' %}" class="ml-2 inline-flex items-center justify-center rounded-full bg-white/[0.08] px-[1.1rem] py-2 text-[0.85rem] text-[#f5f5f7] no-underline transition hover:bg-white hover:text-[#cfcdcd]">Cancel</a>
+                    <a href="{% url 'projects:show_project' %}" class="ml-2 inline-flex items-center justify-center rounded-full bg-white/[0.08] px-[1.1rem] py-2 text-[0.85rem] text-[#f5f5f7] no-underline transition hover:bg-white hover:text-[#cfcdcd]">Cancel</a>
                 </form>
             </div>
         </section>

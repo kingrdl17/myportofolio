@@ -120,7 +120,7 @@
             const deleteBtn = IS_SUPERUSER
                 ? `<button type="button" data-action="delete" data-id="${escapeHtml(project.id)}" class="inline-flex cursor-pointer items-center justify-center rounded-full border-0 bg-[#b42318] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-white transition-all hover:bg-white hover:text-[#b42318] hover:shadow-[0_0_12px_rgba(180,35,24,0.8)]">Delete</button>`
                 : '';
-            const editUrl = "{% url 'project:edit_project' '00000000-0000-0000-0000-000000000000' %}"
+            const editUrl = "{% url 'projects:edit_project' '00000000-0000-0000-0000-000000000000' %}"
                 .replace('00000000-0000-0000-0000-000000000000', project.id);
             actionsHtml = `
                 <div class="mt-auto flex flex-col">

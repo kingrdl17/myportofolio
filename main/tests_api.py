@@ -5,8 +5,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from education.models import Education
-from experience.models import Experience
+from post.models import Education
+from projects.models import Experience
 
 
 class ExperienceAPITest(APITestCase):
@@ -17,18 +17,18 @@ class ExperienceAPITest(APITestCase):
         self.visitor = User.objects.create_user(
             username="visitor", password="test-password"
         )
-        self.experience = Experience.objects.create(
+        self.projects = Experience.objects.create(
             title="Software Intern",
             description="Built web applications",
             category="internship",
             thumbnail="https://example.com/logo.png",
         )
-        self.list_url = reverse("api:experience-list")
+        self.list_url = reverse("api:projects-list")
         self.detail_url = reverse(
-            "api:experience-detail", args=[self.experience.id]
+            "api:projects-detail", args=[self.projects.id]
         )
         self.star_url = reverse(
-            "api:experience-star", args=[self.experience.id]
+            "api:projects-star", args=[self.projects.id]
         )
         self.payload = {
             "title": "Backend Intern",
@@ -40,7 +40,7 @@ class ExperienceAPITest(APITestCase):
     def test_public_list_and_detail(self):
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]["id"], str(self.experience.id))
+        self.assertEqual(response.data[0]["id"], str(self.projects.id))
         self.assertFalse(response.data[0]["is_starred"])
         self.assertNotIn("fields", response.data[0])
         self.assertEqual(
@@ -53,8 +53,8 @@ class ExperienceAPITest(APITestCase):
         response = self.client.get(self.list_url, {"title": "not-found"})
         self.assertEqual(response.data, [])
 
-    def test_missing_experience(self):
-        url = reverse("api:experience-detail", args=[uuid.uuid4()])
+    def test_missing_projects(self):
+        url = reverse("api:projects-detail", args=[uuid.uuid4()])
         self.assertEqual(self.client.get(url).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_guest_and_visitor_cannot_write(self):
@@ -100,8 +100,8 @@ class ExperienceAPITest(APITestCase):
             self.detail_url, {"title": "Changed"}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.experience.refresh_from_db()
-        self.assertEqual(self.experience.description, "Built web applications")
+        self.projects.refresh_from_db()
+        self.assertEqual(self.projects.description, "Built web applications")
 
         response = self.client.put(
             self.detail_url, {"title": "Incomplete"}, format="json"
@@ -114,7 +114,7 @@ class ExperienceAPITest(APITestCase):
         response = self.client.delete(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(response.content, b"")
-        self.assertFalse(Experience.objects.filter(pk=self.experience.id).exists())
+        self.assertFalse(Experience.objects.filter(pk=self.projects.id).exists())
 
     def test_star_requires_login_and_toggles(self):
         self.assertEqual(
@@ -197,16 +197,16 @@ class EducationAPITest(APITestCase):
         editor_group, _ = Group.objects.get_or_create(name="Editor")
         self.editor.groups.add(editor_group)
 
-        self.education = Education.objects.create(
+        self.post = Education.objects.create(
             institution="Universitas Indonesia",
             degree="S1",
             field_of_study="Sistem Informasi",
             description="Fakultas Ilmu Komputer",
             started_at=date(2022, 8, 1),
         )
-        self.list_url = reverse("api:education-list")
-        self.detail_url = reverse("api:education-detail", args=[self.education.id])
-        self.star_url = reverse("api:education-star", args=[self.education.id])
+        self.list_url = reverse("api:post-list")
+        self.detail_url = reverse("api:post-detail", args=[self.post.id])
+        self.star_url = reverse("api:post-star", args=[self.post.id])
         self.payload = {
             "institution": "Stanford University",
             "degree": "MSc",
@@ -219,7 +219,7 @@ class EducationAPITest(APITestCase):
     def test_public_can_read_list_and_detail(self):
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]["id"], str(self.education.id))
+        self.assertEqual(response.data[0]["id"], str(self.post.id))
         self.assertFalse(response.data[0]["is_starred"])
 
         detail_resp = self.client.get(self.detail_url)
@@ -231,8 +231,8 @@ class EducationAPITest(APITestCase):
         response = self.client.get(self.list_url, {"title": "Oxford"})
         self.assertEqual(response.data, [])
 
-    def test_missing_education(self):
-        url = reverse("api:education-detail", args=[uuid.uuid4()])
+    def test_missing_post(self):
+        url = reverse("api:post-detail", args=[uuid.uuid4()])
         self.assertEqual(self.client.get(url).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_guest_and_visitor_cannot_write(self):
@@ -253,8 +253,8 @@ class EducationAPITest(APITestCase):
         # Editor diizinkan mengubah (PATCH)
         resp_patch = self.client.patch(self.detail_url, {"degree": "Magister"}, format="json")
         self.assertEqual(resp_patch.status_code, status.HTTP_200_OK)
-        self.education.refresh_from_db()
-        self.assertEqual(self.education.degree, "Magister")
+        self.post.refresh_from_db()
+        self.assertEqual(self.post.degree, "Magister")
 
         # Editor diizinkan mengubah (PUT)
         resp_put = self.client.put(self.detail_url, self.payload, format="json")
@@ -263,7 +263,7 @@ class EducationAPITest(APITestCase):
         # Editor ditolak menghapus (DELETE)
         resp_del = self.client.delete(self.detail_url)
         self.assertEqual(resp_del.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertTrue(Education.objects.filter(pk=self.education.id).exists())
+        self.assertTrue(Education.objects.filter(pk=self.post.id).exists())
 
     def test_owner_can_create_and_delete(self):
         self.client.force_authenticate(user=self.owner)
@@ -271,7 +271,7 @@ class EducationAPITest(APITestCase):
         self.assertEqual(resp_post.status_code, status.HTTP_201_CREATED)
         new_id = resp_post.data["id"]
 
-        resp_del = self.client.delete(reverse("api:education-detail", args=[new_id]))
+        resp_del = self.client.delete(reverse("api:post-detail", args=[new_id]))
         self.assertEqual(resp_del.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Education.objects.filter(pk=new_id).exists())
 
