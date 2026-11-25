@@ -1,8 +1,8 @@
 from django.core.exceptions import ValidationError
-from django.forms import DateInput, ModelForm, TextInput, Textarea, URLInput
+from django.forms import ModelForm, TextInput, Textarea, URLInput
 from django.utils.html import strip_tags
 
-from .models import Education
+from .models import Post
 
 FORM_CONTROL_CLASSES = (
     "w-full rounded-xl border border-[#0a84ff] bg-[rgba(30,30,30,0.75)] p-3 "
@@ -11,63 +11,44 @@ FORM_CONTROL_CLASSES = (
 )
 
 
-class EducationForm(ModelForm):
+class PostForm(ModelForm):
     class Meta:
-        model = Education
+        model = Post
         fields = [
-            "institution",
-            "degree",
-            "field_of_study",
-            "description",
-            "thumbnail",
-            "started_at",
-            "ended_at",
+            "title",
+            "image_url",
+            "content",
+            "category",
         ]
         labels = {
-            "institution": "Nama Institusi / Universitas",
-            "degree": "Gelar / Tingkat",
-            "field_of_study": "Jurusan / Bidang Studi",
-            "description": "Deskripsi / Pencapaian",
-            "thumbnail": "URL Logo / Gambar",
-            "started_at": "Tanggal Mulai",
-            "ended_at": "Tanggal Selesai",
+            "title": "Post title",
+            "image_url": "Image URL",
+            "content": "Post content",
+            "category": "Post category",
         }
         widgets = {
-            "institution": TextInput(
-                attrs={"placeholder": "Universitas Indonesia", "maxlength": 255, "class": FORM_CONTROL_CLASSES}
+            "title": TextInput(
+                attrs={"placeholder": "Post title", "maxlength": 255, "class": FORM_CONTROL_CLASSES}
             ),
-            "degree": TextInput(
-                attrs={"placeholder": "Sarjana Komputer (S.Kom)", "maxlength": 255, "class": FORM_CONTROL_CLASSES}
-            ),
-            "field_of_study": TextInput(
-                attrs={"placeholder": "Ilmu Komputer", "maxlength": 255, "class": FORM_CONTROL_CLASSES}
-            ),
-            "description": Textarea(
+            "content": Textarea(
                 attrs={
-                    "placeholder": "Ceritakan pengalaman atau fokus studi selama pendidikan...",
+                    "placeholder": "Write post content...",
                     "rows": 3,
                     "class": FORM_CONTROL_CLASSES,
                 }
             ),
-            "thumbnail": URLInput(attrs={"placeholder": "URL Here", "class": FORM_CONTROL_CLASSES}),
-            "started_at": DateInput(attrs={"type": "date", "class": FORM_CONTROL_CLASSES}),
-            "ended_at": DateInput(attrs={"type": "date", "class": FORM_CONTROL_CLASSES}),
+            "image_url": URLInput(attrs={"placeholder": "https://example.com/image.jpg", "class": FORM_CONTROL_CLASSES}),
         }
 
-    def clean_institution(self):
-        institution = strip_tags(self.cleaned_data["institution"]).strip()
-        if not institution:
-            raise ValidationError("Nama institusi tidak boleh hanya berisi tag HTML.")
-        return institution
+    def clean_title(self):
+        title = strip_tags(self.cleaned_data["title"]).strip()
+        if not title:
+            raise ValidationError("Post title cannot be empty.")
+        return title
 
-    def clean_degree(self):
-        degree = self.cleaned_data.get("degree")
-        return strip_tags(degree).strip() if degree else degree
-
-    def clean_field_of_study(self):
-        field_of_study = self.cleaned_data.get("field_of_study")
-        return strip_tags(field_of_study).strip() if field_of_study else field_of_study
-
-    def clean_description(self):
-        description = self.cleaned_data.get("description")
+    def clean_content(self):
+        description = self.cleaned_data.get("content")
         return strip_tags(description).strip() if description else description
+
+
+EducationForm = PostForm

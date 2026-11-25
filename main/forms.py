@@ -1,4 +1,4 @@
-from education.forms import EducationForm
-from experience.forms import ExperienceForm
+from education.forms import EducationForm, PostForm
+from experience.forms import ExperienceForm, ProjectForm
 
-__all__ = ["EducationForm", "ExperienceForm"]
+__all__ = ["EducationForm", "ExperienceForm", "PostForm", "ProjectForm"]

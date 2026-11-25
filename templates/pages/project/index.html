@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+{% block content %}
+    <main>
+    <section class="border-t border-white/[0.12] py-16" id="project">
+        <div class="mx-auto max-w-[960px] rounded-3xl border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-8">
+
+            <div class="mb-6 flex w-full items-center justify-between gap-4 max-[600px]:flex-col max-[600px]:items-start">
+            <h1 class="bg-gradient-to-b from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent my-2 text-5xl flex items-center lowercase font-sans-serif text-3xl font-extralight">Project</h1>
+            {% if user.is_superuser %}
+            <button type="button"
+                    class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border-0 bg-[#0a84ff] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-white no-underline transition-all duration-300 hover:bg-white hover:text-[#0066cc] hover:drop-shadow-[0_0_8px_white] hover:shadow-[0_0_12px_rgba(10,132,255,0.8),0_0_24px_rgba(10,132,255,0.5),0_0_36px_rgba(10,132,255,0.3)]"
+                    popovertarget="add-project-modal">
+                <span aria-hidden="true">+</span>
+                Add New
+            </button>
+            {% endif %}
+            </div>
+
+            <form id="project-search-form" class="mb-6 flex gap-3 max-[600px]:flex-col">
+                    <input type="search"
+                           id="search-input"
+                           name="title"
+                           value="{{ title_query }}"
+                           placeholder="Cari berdasarkan nama Project"
+                           class="min-w-0 w-full rounded-full border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-[0.7rem] text-[#f5f5f7] placeholder:text-[#a1a1a6] focus:border-[#0a84ff] focus:outline focus:outline-2 focus:outline-[#0a84ff]"
+                           aria-label="Cari berdasarkan nama Project">
+                    <button type="submit" class="w-full cursor-pointer rounded-full border-0 bg-[#0a84ff] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-white transition-colors hover:bg-white hover:text-[#0066cc] sm:w-auto">Search</button>
+            </form>
+            
+            <!-- Loading State -->
+            <div id="loading" class="hidden text-[#a1a1a6]">
+                <p class="text-[#a1a1a6]">Memuat projects...</p>
+            </div>
+            <!-- Error State -->
+            <div id="error" class="hidden text-[#a1a1a6]">
+                <p class="text-[#a1a1a6]">Gagal memuat data projects. Silakan coba lagi.</p>
+            </div>
+            <!-- Empty State -->
+            <div id="empty" class="hidden text-[#a1a1a6]">
+                <p class="text-[#a1a1a6]">Nothing here for now.</p>
+            </div>
+            <!-- Project Grid -->
+            <div id="grid" class="hidden grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4"></div>
+
+        </div>
+    </section>
+</main>
+
+{% if user.is_superuser %}
+    {% include "components/project_form_modal.html" %}
+{% endif %}
+{% include "components/project_delete_modal.html" %}
+
+{% load static %}
+{% csrf_token %}
+<script src="{% static 'js/delete-modal.js' %}?v=2" defer></script>
+<script>
+        const BASE_EXPERIENCES_ENDPOINT = "{% url 'api:project-list' %}";
+    const DETAIL_EXPERIENCE_ENDPOINT = "{% url 'api:project-detail' '00000000-0000-0000-0000-000000000000' %}";
+    const STAR_EXPERIENCE_ENDPOINT = "{% url 'api:project-star' '00000000-0000-0000-0000-000000000000' %}";
+    const IS_SUPERUSER = "{{ user.is_superuser|yesno:'true,false' }}" === "true";
+    const IS_AUTHENTICATED = "{{ user.is_authenticated|yesno:'true,false' }}" === "true";
+    const IS_EDITOR = "{{ is_editor|yesno:'true,false' }}" === "true";
+
+    const loadingState = document.getElementById('loading');
+    const errorState = document.getElementById('error');
+    const emptyState = document.getElementById('empty');
+    const gridContainer = document.getElementById('grid');
+    const searchForm = document.getElementById('project-search-form');
+    const searchInput = document.getElementById('search-input');
+    const projectForm = document.getElementById('project-form');
+
+    let projectsAbortController;
+    let searchDebounceTimer;
+
+    function getCookie(name) {
+        const prefix = `${name}=`;
+        const cookie = document.cookie.split(';').map(v => v.trim()).find(v => v.startsWith(prefix));
+        return cookie ? decodeURIComponent(cookie.slice(prefix.length)) : null;
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+    }
+
+    function projectEndpoint(pattern, id) {
+        return pattern.replace('00000000-0000-0000-0000-000000000000', id);
+    }
+
+    function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
+        loadingState.classList.toggle('hidden', !showLoading);
+        errorState.classList.toggle('hidden', !showError);
+        emptyState.classList.toggle('hidden', !showEmpty);
+        gridContainer.classList.toggle('hidden', !showGrid);
+    }
+
+    function buildProjectCardElement(project) {
+        const article = document.createElement('article');
+        article.className = 'rounded-xl border border-white/[0.12] bg-[rgba(30,30,30,0.75)] p-5';
+
+        const isStarredClass = project.is_starred ? ' bg-[#dd9b00]' : ' bg-white/[0.08]';
+        const starButton = IS_AUTHENTICATED
+            ? `<button type="button" class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border-0 px-[1.1rem] py-2 text-[0.85rem] text-[#f5f5f7] transition-all hover:bg-white hover:text-[#0066cc]${isStarredClass}"
+                 data-action="star" data-id="${escapeHtml(project.id)}"
+                 title="${escapeHtml(project.starred_by_names || 'Be the first to star this')}">
+                 <span aria-hidden="true">★</span> ${project.is_starred ? 'Unstar' : 'Star'}
+                 <span class="rounded-full bg-white/25 px-2 text-[0.8rem] leading-5">${project.star_count}</span>
+               </button>`
+            : `<a href="{% url 'accounts:login' %}" class="inline-flex items-center justify-center gap-2 rounded-full border-0 bg-white/[0.08] px-[1.1rem] py-2 text-[0.85rem] text-[#f5f5f7] transition-all hover:bg-white hover:text-[#0066cc]">
+                 Login to star (${project.star_count})
+               </a>`;
+
+        let actionsHtml = '';
+        if (IS_SUPERUSER || IS_EDITOR) {
+            const deleteBtn = IS_SUPERUSER
+                ? `<button type="button" data-action="delete" data-id="${escapeHtml(project.id)}" class="inline-flex cursor-pointer items-center justify-center rounded-full border-0 bg-[#b42318] px-[1.1rem] py-2 text-[0.85rem] font-extralight text-white transition-all hover:bg-white hover:text-[#b42318] hover:shadow-[0_0_12px_rgba(180,35,24,0.8)]">Delete</button>`
+                : '';
+            const editUrl = "{% url 'project:edit_project' '00000000-0000-0000-0000-000000000000' %}"
+                .replace('00000000-0000-0000-0000-000000000000', project.id);
+            actionsHtml = `
+                <div class="mt-auto flex flex-col">
+                    <div class="mt-4 flex flex-wrap items-center gap-5">
+                        ${deleteBtn}
+                        <a href="${editUrl}" class="inline-flex items-center justify-center rounded-full bg-white/[0.08] px-[1.1rem] py-2 text-[0.85rem] text-[#f5f5f7] no-underline transition-all hover:bg-white hover:text-[#cfcdcd]">Edit</a>
+                    </div>
+                </div>`;
+        }
+
+        article.innerHTML = `
+            <span class="text-[0.75rem] font-bold uppercase text-[#0066cc]">${escapeHtml(project.category_display || project.category)}</span>
+            <h2 class="my-2 text-xl text-white font-medium">${escapeHtml(project.project_name)}</h2>
+            <p class="text-[#a1a1a6] text-sm">${escapeHtml(project.project_description)}</p>
+            ${project.technologies_used ? `<p class="mt-3 text-xs text-white/80"><strong>Technologies:</strong> ${escapeHtml(project.technologies_used)}</p>` : ''}
+            ${project.project_link ? `<a href="${escapeHtml(project.project_link)}" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex text-sm text-[#0a84ff] no-underline">Project Link</a>` : ''}
+            <div class="flex items-center gap-2">${starButton}</div>
+            ${actionsHtml}
+        `;
+        return article;
+    }
+
+    async function fetchProjects(searchQuery = '') {
+        if (projectsAbortController) projectsAbortController.abort();
+        projectsAbortController = new AbortController();
+        try {
+            displayPageSection({ showLoading: true });
+            const url = new URL(BASE_EXPERIENCES_ENDPOINT, window.location.origin);
+            if (searchQuery) url.searchParams.set('title', searchQuery);
+
+            const response = await fetch(url, {
+                headers: { Accept: 'application/json' },
+                signal: projectsAbortController.signal,
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const projects = await response.json();
+            gridContainer.replaceChildren(...projects.map(buildProjectCardElement));
+            displayPageSection({ showGrid: projects.length > 0, showEmpty: projects.length === 0 });
+        } catch (error) {
+            if (error.name === 'AbortError') return;
+            console.error(error);
+            displayPageSection({ showError: true });
+        }
+    }
+
+    function apiErrorMessage(data, status) {
+        const messages = Object.values(data).flat().filter(val => typeof val === 'string');
+        return messages.join(' ') || `Request failed (HTTP ${status}).`;
+    }
+
+    async function writeProject(url, method, payload) {
+        const response = await fetch(url, {
+            method,
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: payload === undefined ? undefined : JSON.stringify(payload),
+        });
+        if (response.status === 204) return null;
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(apiErrorMessage(data, response.status));
+        return data;
+    }
+
+    async function addProject(event) {
+        event.preventDefault();
+        const submitButton = projectForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        try {
+            const formData = new FormData(projectForm);
+            const payload = Object.fromEntries([
+                'project_name', 'project_description', 'category', 'technologies_used', 'project_link'
+            ].map(name => [name, formData.get(name) || null]));
+
+            await writeProject(BASE_EXPERIENCES_ENDPOINT, 'POST', payload);
+            projectForm.reset();
+            const modal = document.getElementById('add-project-modal');
+            if (modal && modal.hidePopover) modal.hidePopover();
+            showToast('Success', 'Project baru berhasil ditambahkan!', 'success');
+            await fetchProjects(searchInput.value.trim());
+        } catch (error) {
+            showToast('Gagal menambahkan project', error.message, 'error');
+        } finally {
+            submitButton.disabled = false;
+        }
+    }
+
+    if (projectForm) {
+        projectForm.addEventListener('submit', addProject);
+    }
+
+    gridContainer.addEventListener('click', async function(event) {
+        const button = event.target.closest('button[data-action]');
+        if (!button || button.disabled) return;
+
+        const action = button.dataset.action;
+        try {
+            if (action === 'delete' && !(await window.confirmDelete())) return;
+
+            button.disabled = true;
+            const pattern = action === 'star' ? STAR_EXPERIENCE_ENDPOINT : DETAIL_EXPERIENCE_ENDPOINT;
+            await writeProject(
+                projectEndpoint(pattern, button.dataset.id),
+                action === 'star' ? 'POST' : 'DELETE'
+            );
+            showToast('Success', action === 'star' ? 'Star updated.' : 'Project berhasil dihapus.', 'success');
+            await fetchProjects(searchInput.value.trim());
+        } catch (error) {
+            showToast('Request failed', error.message, 'error');
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => fetchProjects(searchInput.value.trim()), 300);
+    });
+
+    searchForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        clearTimeout(searchDebounceTimer);
+        fetchProjects(searchInput.value.trim());
+    });
+
+    fetchProjects(searchInput.value.trim());
+</script>
+{% endblock content %}

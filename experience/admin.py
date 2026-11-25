@@ -1,11 +1,10 @@
 from django.contrib import admin
 
-from .models import Experience
+from .models import Project
 
 
-@admin.register(Experience)
-class ExperienceAdmin(admin.ModelAdmin):
-    list_display = ("title", "category", "started_at", "ended_at", "is_ongoing")
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ("project_name", "category", "project_link")
     list_filter = ("category",)
-    search_fields = ("title", "description")
-    readonly_fields = ("started_at",)
+    search_fields = ("project_name", "project_description", "technologies_used")

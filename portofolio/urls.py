@@ -23,6 +23,8 @@ urlpatterns = [
     path("", include(("profiles.urls", "profiles"), namespace="profiles")),
     path("", include(("education.urls", "education"), namespace="education")),
     path("", include(("experience.urls", "experience"), namespace="experience")),
+    path("", include(("education.urls", "post"), namespace="post")),
+    path("", include(("experience.urls", "project"), namespace="project")),
     path("", include(("accounts.urls", "accounts"), namespace="accounts")),
     path("", include(("main.urls", "main"), namespace="main")),
     path("api/v1/", include("main.api_urls")),

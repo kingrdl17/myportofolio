@@ -1,8 +1,8 @@
 from django.core.exceptions import ValidationError
-from django.forms import DateInput, ModelForm, TextInput, Textarea, URLInput
+from django.forms import ModelForm, TextInput, Textarea, URLInput
 from django.utils.html import strip_tags
 
-from .models import Experience
+from .models import Project
 
 FORM_CONTROL_CLASSES = (
     "w-full rounded-xl border border-[#0a84ff] bg-[rgba(30,30,30,0.75)] p-3 "
@@ -11,45 +11,46 @@ FORM_CONTROL_CLASSES = (
 )
 
 
-class ExperienceForm(ModelForm):
+class ProjectForm(ModelForm):
     class Meta:
-        model = Experience
-        fields = ["title", "category", "description", "thumbnail", "started_at", "ended_at"]
+        model = Project
+        fields = ["project_name", "project_description", "category", "technologies_used", "project_link"]
         labels = {
-            "title": "Judul / Posisi",
-            "category": "Kategori / Jenis Pengalaman",
-            "description": "Deskripsi / Pencapaian",
-            "thumbnail": "URL Logo / Gambar",
-            "started_at": "Tanggal Mulai",
-            "ended_at": "Tanggal Selesai",
+            "project_name": "Project Name",
+            "project_description": "Project Description",
+            "category": "Project category",
+            "technologies_used": "Technologies used",
+            "project_link": "Project Link",
         }
         widgets = {
-            "title": TextInput(
-                attrs={"placeholder": "Software Engineer Intern", "maxlength": 255, "class": FORM_CONTROL_CLASSES}
+            "project_name": TextInput(
+                attrs={"placeholder": "My project", "maxlength": 255, "class": FORM_CONTROL_CLASSES}
             ),
-            "description": Textarea(
+            "project_description": Textarea(
                 attrs={
-                    "placeholder": (
-                        "Ceritakan pengalaman, tanggung jawab, atau pencapaian selama pengalaman ini..."
-                    ),
+                    "placeholder": "Describe the project...",
                     "rows": 3,
                     "class": FORM_CONTROL_CLASSES,
                 }
             ),
-            "thumbnail": URLInput(attrs={"placeholder": "URL Here", "class": FORM_CONTROL_CLASSES}),
-            "started_at": DateInput(attrs={"type": "date", "class": FORM_CONTROL_CLASSES}),
-            "ended_at": DateInput(attrs={"type": "date", "class": FORM_CONTROL_CLASSES}),
+            "technologies_used": Textarea(
+                attrs={"placeholder": "Django, JavaScript, PostgreSQL", "rows": 2, "class": FORM_CONTROL_CLASSES}
+            ),
+            "project_link": URLInput(attrs={"placeholder": "https://example.com", "class": FORM_CONTROL_CLASSES}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["category"].widget.attrs["class"] = FORM_CONTROL_CLASSES
 
-    def clean_title(self):
-        title = strip_tags(self.cleaned_data["title"]).strip()
-        if not title:
-            raise ValidationError("Judul tidak boleh hanya berisi tag HTML.")
-        return title
+    def clean_project_name(self):
+        name = strip_tags(self.cleaned_data["project_name"]).strip()
+        if not name:
+            raise ValidationError("Project name cannot be empty.")
+        return name
 
-    def clean_description(self):
-        return strip_tags(self.cleaned_data["description"]).strip()
+    def clean_project_description(self):
+        return strip_tags(self.cleaned_data["project_description"]).strip()
+
+
+ExperienceForm = ProjectForm
